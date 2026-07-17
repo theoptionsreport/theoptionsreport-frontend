@@ -392,8 +392,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       </div>
       <table><thead><tr>
         <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
-        <th class="r">% Gain</th><th class="r">Open</th><th class="r">Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
-        <th class="r">Volume</th><th class="r">Open Interest</th><th>Expiry</th>
+        <th class="r">% Gain</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
+        <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="gBody"></tbody></table>
     </div>
   </div>
@@ -431,8 +431,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       </div>
       <table><thead><tr>
         <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
-        <th class="r">% Change</th><th class="r">Open</th><th class="r">Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
-        <th class="r">Volume</th><th class="r">Open Interest</th><th>Expiry</th>
+        <th class="r">% Change</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
+        <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="vBody"></tbody></table>
     </div>
   </div>
@@ -470,8 +470,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       </div>
       <table><thead><tr>
         <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
-        <th class="r">% Change</th><th class="r">Open</th><th class="r">Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
-        <th class="r">Volume</th><th class="r">Open Interest</th><th>Expiry</th>
+        <th class="r">% Change</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
+        <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="oBody"></tbody></table>
     </div>
   </div>
@@ -530,7 +530,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       <p>The Options Report started as a solo project. As an options trader, I kept noticing that other platforms would present inaccurate, illiquid contracts as the day's top gainers — giving a misleading picture of what was actually happening in the market. I decided to take matters into my own hands, and started by posting the day's top gaining contracts on X. That account grew into the website you're looking at today: a simple, accurate, and easy-to-use platform for options traders.</p>
 
       <h2 class="about-heading">The Data</h2>
-      <p>This website is completely free to use. Options data refreshes every minute throughout the trading day, so you're always seeing a current picture of market activity.</p>
+      <p>This website is completely free to use. Options data is sourced from a professional third-party market data provider and refreshes every minute throughout the trading day, so you're always seeing a current picture of market activity.</p>
 
       <h2 class="about-heading">Get In Touch</h2>
       <p>Have feedback, questions, or ideas? I'd love to hear from you.</p>
@@ -564,47 +564,47 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       <p class="about-lead">Every key term you'll see across The Options Report, explained in plain language.</p>
 
       <div class="glossary-list">
-        <div class="glossary-item"><div class="glossary-term">Ask</div><div class="glossary-def">The lowest price a seller is currently willing to accept for an options contract. When you buy a contract at "market price" you typically pay the ask. For example, if the ask on a call is $2.50, buying one contract would cost you $250 (since each contract represents 100 shares).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Ask</div><div class="glossary-def">The lowest price a seller is currently willing to accept for an options contract. Buyers who place a market order are typically filled at or near the ask. For example, if the ask on a call is $2.50, purchasing one contract would cost $250, since each contract represents 100 shares. Together with the bid, the ask defines the spread — the transaction cost of entering and exiting a position.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Bid</div><div class="glossary-def">The highest price a buyer is currently willing to pay for an options contract. When you sell a contract at market price you typically receive the bid. The gap between the bid and ask is called the "spread" — a smaller spread generally means the contract is more actively traded.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Bid</div><div class="glossary-def">The highest price a buyer is currently willing to pay for an options contract. When you sell a contract at market price you typically receive the bid. The difference between the bid and ask is called the "spread" — a smaller spread generally means the contract is more actively traded.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Call Option</div><div class="glossary-def">A contract that gives the buyer the right, but not the obligation, to buy 100 shares of a stock at a specific price before a certain date. Traders typically buy calls when they believe a stock's price will go up. For example, if you buy a $100 call and the stock rises to $110, your call becomes significantly more valuable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Call Option</div><div class="glossary-def">A contract that gives the buyer the right, but not the obligation, to buy 100 shares of the underlying stock at a set price — the strike price — on or before the contract's expiration date. The buyer pays a premium (the contract's price) for this right, and that premium is the most they can lose. Traders typically buy calls when they believe a stock's price will rise, since the contract generally gains value as the stock climbs above the strike price. For example, if you buy a $100 call and the stock rises to $110, the contract now carries $10 of intrinsic value per share — $1,000 per contract — and can be sold or exercised for a profit.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Contract</div><div class="glossary-def">A single options contract represents 100 shares of the underlying stock. This is why a contract priced at $2.50 actually costs $250 to purchase. All volume and open interest numbers on this website refer to the number of contracts, not individual shares.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Contract</div><div class="glossary-def">A single options contract represents 100 shares of the underlying stock. This is why a contract priced at $2.50 costs $250 to purchase. All volume and open interest numbers on this website refer to the number of contracts, not individual shares.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Delta</div><div class="glossary-def">A Greek that measures how much an option's price is expected to move for every $1 change in the underlying stock. A Delta of 0.50 means the option gains roughly $0.50 if the stock goes up $1. Call Deltas range from 0 to 1, while put Deltas range from 0 to -1.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Delta</div><div class="glossary-def">A Greek that measures how much an option's price is expected to change for every $1 move in the underlying stock. A Delta of 0.50 means the option gains roughly $0.50 if the stock rises $1, and loses roughly $0.50 if the stock falls $1. Call Deltas range from 0 to 1 and put Deltas from 0 to -1, with contracts deeper in the money carrying Deltas closer to 1 (or -1). Many traders also read Delta as a rough estimate of the probability that a contract finishes in the money.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">ETF</div><div class="glossary-def">Short for Exchange Traded Fund. An ETF is a basket of stocks or other assets that trades on an exchange just like a single stock. Popular ETFs like SPY (which tracks the S&amp;P 500) and QQQ (which tracks the Nasdaq 100) have some of the most heavily traded options in the entire market.</div></div>
+        <div class="glossary-item"><div class="glossary-term">ETF</div><div class="glossary-def">An Exchange Traded Fund — a single security that holds a basket of stocks or other assets and trades on an exchange like an individual stock. Because ETFs such as SPY (which tracks the S&amp;P 500) and QQQ (which tracks the Nasdaq 100) represent the broader market, their options are among the most heavily traded in the entire market. The Stocks/ETFs filter on The Options Report lets you separate the two.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Expiration Date</div><div class="glossary-def">The date on which an options contract expires. After this date, the contract is no longer valid and any remaining value disappears. On The Options Report, the expiration date is shown in MM/DD/YY format and contracts expiring soon are highlighted in orange.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Expiration Date</div><div class="glossary-def">The date on which an options contract ceases to exist. An in-the-money contract held through expiration is typically exercised or settled, while an out-of-the-money contract expires worthless. Because an option's remaining time is part of its value, contracts lose time value as this date approaches.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Gain</div><div class="glossary-def">The percentage increase in an option's price from the previous day's close to its current price. A +500% gain means the option is worth five times more than it closed at yesterday. High-gain contracts usually reflect significant news or sharp moves in the underlying stock.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Gain</div><div class="glossary-def">The percentage increase in an option's price from the previous day's close to its current price. A +100% gain means the option's price has doubled since the previous close. High-gain contracts usually reflect significant news or sharp moves in the underlying stock.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Implied Volatility (IV)</div><div class="glossary-def">The market's expectation of how much the underlying stock will move over the life of the option. Higher IV means higher expected movement and typically more expensive options. IV tends to spike before major events like earnings announcements and drop afterward.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Implied Volatility (IV)</div><div class="glossary-def">The market's expectation of how much the underlying stock will move over the life of the option, derived from the option's current price. Higher IV reflects greater expected movement and translates into more expensive contracts, since sellers demand more premium for greater uncertainty. IV tends to spike ahead of major events such as earnings announcements and decline afterward.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">In The Money</div><div class="glossary-def">A contract that has intrinsic value based on the current stock price. A call is in the money when the stock price is above the strike price, and a put is in the money when the stock price is below the strike price. On the options chain page, in-the-money contracts are clearly highlighted.</div></div>
+        <div class="glossary-item"><div class="glossary-term">In The Money</div><div class="glossary-def">A contract that has intrinsic value at the current stock price. A call is in the money when the stock trades above the strike price; a put is in the money when the stock trades below it. For example, a $100 call is in the money with the stock at $105. On the options chain page, in-the-money contracts are clearly highlighted.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Intrinsic Value</div><div class="glossary-def">The amount of an option's price that comes from real, built-in value based on the current stock price — essentially, what the contract would be worth if it were exercised right now. For a call option, it's how much the stock price sits above the strike price; for a put option, it's how much the stock price sits below the strike. For example, if a stock is trading at $110 and you hold a $100 call, that call has $10 of intrinsic value. Contracts that are out of the money have no intrinsic value — their entire price comes from time and the possibility of future movement.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Intrinsic Value</div><div class="glossary-def">The amount of an option's price derived from the current stock price — what the contract would be worth if exercised immediately. For a call option, it's the amount by which the stock price exceeds the strike price; for a put option, the amount by which the stock price is below the strike. For example, if a stock is trading at $110 and you hold a $100 call, that call has $10 of intrinsic value. Contracts that are out of the money have no intrinsic value — their entire price comes from time and the possibility of future movement.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Open</div><div class="glossary-def">The price at which the contract first traded when the market opened today. Comparing the current price to the open gives you a sense of how much the contract has moved during today's trading session.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Open</div><div class="glossary-def">The price at which the contract first traded when the market opened today. Comparing the current price to the open indicates how much the contract has moved during today's trading session.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Open Interest</div><div class="glossary-def">The total number of contracts currently held by traders that haven't been closed or exercised yet. Unlike volume, which resets every day, open interest builds up over time. High open interest generally indicates active trader interest in a particular strike price.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Open Interest</div><div class="glossary-def">The total number of contracts that remain open — held by traders and not yet closed, exercised, or expired. Open interest rises when new positions are created and falls when existing positions are closed. Unlike volume, which resets each trading day, open interest accumulates over time, making it a useful measure of sustained trader interest and liquidity at a particular strike price.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Out Of The Money</div><div class="glossary-def">A contract with no intrinsic value based on the current stock price. A call is out of the money when the stock price is below the strike price, and a put is out of the money when the stock price is above the strike price. These contracts only have value if the stock moves in the right direction before expiration.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Out Of The Money</div><div class="glossary-def">A contract with no intrinsic value based on the current stock price. A call is out of the money when the stock price is below the strike price, and a put is out of the money when the stock price is above the strike price. These contracts hold value only if the stock moves favorably before expiration.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Price (FMV)</div><div class="glossary-def">The "Price" column on The Options Report shows the Fair Market Value (FMV) — an algorithmically derived, real-time estimate of what an options contract is currently worth. Unlike a "last traded price," which only reflects the most recent actual trade, FMV is a model-based estimate that updates continuously throughout the day and stays current even for contracts that don't trade frequently.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Price (FMV)</div><div class="glossary-def">The "Price" column on The Options Report shows the Fair Market Value (FMV) — an algorithmically derived, real-time estimate of what an options contract is currently worth. Unlike a "last traded price," which reflects the most recent actual trade, FMV is a model-based estimate that updates continuously throughout the day and stays current even for contracts that don't trade frequently.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Put Option</div><div class="glossary-def">A contract that gives the buyer the right, but not the obligation, to sell 100 shares of a stock at a specific price before a certain date. Traders typically buy puts when they believe a stock's price will go down. For example, if you buy a $100 put and the stock falls to $90, your put becomes significantly more valuable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Put Option</div><div class="glossary-def">A contract that gives the buyer the right, but not the obligation, to sell 100 shares of the underlying stock at a set price — the strike price — on or before the contract's expiration date. The buyer pays a premium (the contract's price) for this right, and that premium is the most they can lose. Traders typically buy puts when they believe a stock's price will decline, or to protect the value of shares they already own, since the contract generally gains value as the stock falls below the strike price. For example, if you buy a $100 put and the stock falls to $90, the contract now carries $10 of intrinsic value per share — $1,000 per contract — and can be sold or exercised for a profit.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Put-Call Ratio</div><div class="glossary-def">The Put-Call Ratio (PCR) is a widely used indicator of market sentiment, calculated by dividing the total put option volume by the total call option volume. Because puts are often used to bet on or protect against price declines, while calls are typically used to bet on price increases, the ratio offers a quick read on whether traders are leaning bearish or bullish. The Options Report interprets the ratio using these ranges: 0.70 and below is Bullish (call volume significantly outweighs put volume, suggesting traders are positioning for prices to rise); 0.71 to 1.00 is Neutral (put and call volume are relatively balanced, indicating no strong directional bias); and above 1.00 is Bearish (put volume outweighs call volume, suggesting traders are positioning for prices to fall or hedging against declines). Keep in mind that the Put-Call Ratio is just one sentiment gauge and is often used as a contrarian indicator &mdash; extreme readings can sometimes signal that the market is overly one-sided.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Put-Call Ratio</div><div class="glossary-def">The Put-Call Ratio (PCR) is a widely used indicator of market sentiment, calculated by dividing the total put option volume by the total call option volume. Because puts are often used to position for or hedge against price declines, while calls are typically used to position for price increases, the ratio offers a quick read on whether traders are leaning bearish or bullish. The Options Report interprets the ratio using these ranges: 0.70 and below is Bullish (call volume significantly outweighs put volume, suggesting traders are positioning for prices to rise); 0.71 to 1.00 is Neutral (put and call volume are relatively balanced, indicating no strong directional bias); and above 1.00 is Bearish (put volume outweighs call volume, suggesting traders are positioning for prices to fall or hedging against declines). Keep in mind that the Put-Call Ratio is just one sentiment gauge and is often used as a contrarian indicator &mdash; extreme readings can sometimes signal that the market is overly one-sided.</div></div>
 
         <div class="glossary-item"><div class="glossary-term">Strike Price</div><div class="glossary-def">The agreed-upon price at which the option can be exercised. For a call option it's the price at which you can buy the stock; for a put option it's the price at which you can sell it. The strike price is what determines whether a contract is in the money or out of the money.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Theta</div><div class="glossary-def">A Greek that measures how much value an option loses each day due to time decay. A Theta of -0.10 means the option loses about $0.10 in value every day, all else being equal. Time decay accelerates as an option approaches its expiration date.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Theta</div><div class="glossary-def">A Greek that measures how much value an option loses each day due to the passage of time, known as time decay. A Theta of -0.10 means the option loses roughly $0.10 in value per day, all else being equal. Time decay accelerates as expiration approaches, which is why holding short-dated contracts becomes increasingly costly for buyers.</div></div>
 
         <div class="glossary-item"><div class="glossary-term">Ticker</div><div class="glossary-def">The unique symbol used to identify a stock or ETF on the exchange. For example, NVDA is the ticker for NVIDIA and SPY is the ticker for the S&amp;P 500 ETF. On The Options Report, tickers are always displayed in a purple badge for easy identification.</div></div>
 
-        <div class="glossary-item"><div class="glossary-term">Volume</div><div class="glossary-def">The total number of contracts that have traded today. Volume resets at the start of each trading day, making it a good indicator of where the most active trading is happening right now. High volume on a specific strike often signals significant trader interest in that price level.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Volume</div><div class="glossary-def">The total number of contracts bought and sold during the current trading session. Volume resets at the start of each trading day, making it a measure of today's activity — in contrast to open interest, which tracks positions that remain open over time. High volume at a specific strike signals concentrated trader interest, and heavily traded contracts are generally easier to enter and exit at fair prices.</div></div>
       </div>
     </div>
 
@@ -625,10 +625,6 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       <h1 class="about-title">Legal &amp; <span>Disclaimer</span></h1>
       <p class="about-lead">Important information about using The Options Report.</p>
 
-      <div class="legal-disclaimer-box">
-        <strong>Important:</strong> This page provides a general overview only. It is not a substitute for legal advice. If you have specific legal questions please consult a qualified attorney.
-      </div>
-
       <h2 class="about-heading">Not Financial Advice</h2>
       <p>The Options Report is an informational website only. Nothing on this website constitutes financial, investment, legal, or tax advice of any kind. The content is provided for educational and informational purposes only and should not be relied upon as the basis for any investment decision.</p>
       <p>You should always do your own research and consult with a qualified financial advisor before making any trading or investment decisions. Past performance of any options contract or strategy does not guarantee future results.</p>
@@ -642,7 +638,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
       <p>Before trading options you should carefully consider your investment objectives, level of experience, and risk tolerance. You should only trade with money you can afford to lose.</p>
 
       <h2 class="about-heading">Third Party Data</h2>
-      <p>The options and market data displayed on this website is sourced from third party data providers. This data may be delayed and should not be relied upon for trading decisions. The Options Report does not control, guarantee, or warrant the accuracy or timeliness of data received from third party providers.</p>
+      <p>The options and market data displayed on this website is sourced from third party data providers. This data may be delayed. The Options Report does not control, guarantee, or warrant the accuracy or timeliness of data received from third party providers.</p>
 
       <h2 class="about-heading">Terms of Use</h2>
       <p>By accessing or using The Options Report, you agree to use the website solely for lawful, personal, non-commercial purposes. You agree not to attempt to scrape, reverse engineer, or redistribute the data or content on this website without express written permission.</p>
@@ -754,7 +750,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
           </div>
           <div class="faq-a">
             <p>Click any ticker on the main dashboard, or search for a ticker in the top search bar to view its full options chain. The chain is organized by expiration date, with each date in its own collapsible section sorted from soonest to furthest away.</p>
-            <p>Use the Calls and Puts buttons at the top to switch between contract types. In-the-money contracts are clearly highlighted, and each row shows you the strike price, current price, volume, open interest, and Greeks for that specific contract.</p>
+            <p>Use the Calls and Puts filter at the top to switch between contract types. In-the-money contracts are clearly highlighted, and each row shows you the strike price, current price, volume, open interest, and Greeks for that specific contract.</p>
           </div>
         </div>
 
@@ -765,7 +761,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
           </div>
           <div class="faq-a">
             <p>Volume is the total number of contracts that have traded today. It resets at the start of each trading day.</p>
-            <p>Open interest is the total number of contracts currently held by traders that have not been closed or exercised yet. Unlike volume, open interest builds up over time and tells you how many contracts are outstanding.</p>
+            <p>Open interest is the total number of contracts currently held by traders that have not been closed or exercised yet. Unlike volume, open interest accumulates over time and tells you how many contracts are outstanding.</p>
             <p>High volume with low open interest often signals new trader interest. High open interest with lower volume often signals existing positions.</p>
           </div>
         </div>
@@ -1129,7 +1125,7 @@ function rowHTML(r, rank) {
     + '<td class="r"><span class="price">'       + fmtP(r.l) + '</span></td>'
     + '<td class="r">' + fmt(r.v) + '</td>'
     + '<td class="r oi">' + fmt(r.i) + '</td>'
-    + '<td>' + expLabel(r.e) + '</td>'
+    + '<td class="c">' + expLabel(r.e) + '</td>'
     + '</tr>';
 }
 
@@ -1147,7 +1143,7 @@ function rowHTMLChange(r, rank) {
     + '<td class="r"><span class="price">'       + fmtP(r.l) + '</span></td>'
     + '<td class="r">' + fmt(r.v) + '</td>'
     + '<td class="r oi">' + fmt(r.i) + '</td>'
-    + '<td>' + expLabel(r.e) + '</td>'
+    + '<td class="c">' + expLabel(r.e) + '</td>'
     + '</tr>';
 }
 
@@ -1438,11 +1434,11 @@ function renderChainTable() {
       + '<div class="expiry-body' + (isOpen ? ' open' : '') + '" id="' + groupId + '">'
       +   '<table><thead><tr>'
       +     '<th>Contract</th><th class="r">Strike</th><th class="c">Type</th><th class="r">% Change</th>'
-      +     '<th class="r">Open</th><th class="r">Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>'
+      +     '<th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>'
       +     '<th class="r">Volume</th><th class="r">Open Interest</th>'
-      +     '<th class="r"><span class="col-with-tip">Delta<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Delta measures how much the option price is expected to move for every $1 change in the underlying stock. A Delta of 0.50 means the option gains $0.50 if the stock goes up $1.</span></span></th>'
-      +     '<th class="r"><span class="col-with-tip">Theta<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Theta measures how much value the option loses each day due to time decay. A Theta of -0.10 means the option loses $0.10 in value every day, all else being equal.</span></span></th>'
-      +     '<th class="r"><span class="col-with-tip">IV<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Implied Volatility represents the market\'s expectation of how much the stock will move. Higher IV means higher expected movement and typically more expensive options.</span></span></th>'
+      +     '<th class="r"><span class="col-with-tip"><span class="tip-spacer" style="display:inline-block;width:14px;"></span>Delta<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Delta measures how much the option price is expected to move for every $1 change in the underlying stock. A Delta of 0.50 means the option gains $0.50 if the stock rises $1.</span></span></th>'
+      +     '<th class="r"><span class="col-with-tip"><span class="tip-spacer" style="display:inline-block;width:14px;"></span>Theta<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Theta measures how much value the option loses each day due to time decay. A Theta of -0.10 means the option loses $0.10 in value every day, all else being equal.</span></span></th>'
+      +     '<th class="r"><span class="col-with-tip"><span class="tip-spacer" style="display:inline-block;width:14px;"></span>IV<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Implied Volatility represents the market\'s expectation of how much the stock will move. Higher IV means higher expected movement and typically more expensive options.</span></span></th>'
       +   '</tr></thead><tbody>';
 
     contracts.forEach(function(c, idx) {
@@ -1544,6 +1540,32 @@ function setChainType(btn, val) {
 }
 
 // ── SHOW DASHBOARD ──
+// ── BROWSER HISTORY (back/forward button support) ──
+// Each view change is registered with the browser so the back/forward
+// buttons move between views instead of leaving the site.
+var suppressHistory = false;
+
+function pushView(state, hash) {
+  if (suppressHistory) return;
+  var cur = history.state || {};
+  if (cur.view === state.view && cur.ticker === state.ticker) return;
+  try { history.pushState(state, '', hash); } catch (err) {}
+}
+
+window.addEventListener('popstate', function(e) {
+  var st = e.state || { view: 'dashboard' };
+  suppressHistory = true;
+  if (st.view === 'chain' && st.ticker) {
+    document.getElementById('globalSearch').value = st.ticker;
+    openChain();
+  } else if (st.view === 'about')    { showAbout(); }
+  else if (st.view === 'glossary')   { showGlossary(); }
+  else if (st.view === 'legal')      { showLegal(); }
+  else if (st.view === 'faq')        { showFAQ(); }
+  else                               { showDashboard(); }
+  suppressHistory = false;
+});
+
 function showDashboard() {
   document.getElementById('chainPage').style.display     = 'none';
   document.getElementById('aboutPage').style.display     = 'none';
@@ -1555,6 +1577,7 @@ function showDashboard() {
   document.getElementById('backBtn').style.display       = 'none';
   document.getElementById('globalSearch').value          = '';
   window.scrollTo(0, 0);
+  pushView({ view: 'dashboard' }, location.pathname + location.search);
 }
 
 // ── SHOW ABOUT PAGE ──
@@ -1568,6 +1591,7 @@ function showAbout() {
   document.getElementById('aboutPage').style.display     = 'block';
   document.getElementById('backBtn').style.display       = 'flex';
   window.scrollTo(0, 0);
+  pushView({ view: 'about' }, '#about');
 }
 
 // ── SHOW GLOSSARY PAGE ──
@@ -1581,6 +1605,7 @@ function showGlossary() {
   document.getElementById('glossaryPage').style.display  = 'block';
   document.getElementById('backBtn').style.display       = 'flex';
   window.scrollTo(0, 0);
+  pushView({ view: 'glossary' }, '#glossary');
 }
 
 // ── SHOW LEGAL PAGE ──
@@ -1594,6 +1619,7 @@ function showLegal() {
   document.getElementById('legalPage').style.display     = 'block';
   document.getElementById('backBtn').style.display       = 'flex';
   window.scrollTo(0, 0);
+  pushView({ view: 'legal' }, '#legal');
 }
 
 // ── SHOW FAQ PAGE ──
@@ -1607,6 +1633,7 @@ function showFAQ() {
   document.getElementById('faqPage').style.display       = 'block';
   document.getElementById('backBtn').style.display       = 'flex';
   window.scrollTo(0, 0);
+  pushView({ view: 'faq' }, '#faq');
 }
 
 // ── TOGGLE FAQ ITEM ──
@@ -1626,6 +1653,7 @@ function openChain() {
   document.getElementById('chainPage').style.display   = 'block';
   document.getElementById('backBtn').style.display     = 'flex';
   window.scrollTo(0, 0);
+  pushView({ view: 'chain', ticker: ticker }, '#chain/' + encodeURIComponent(ticker));
 
   document.getElementById('chainBadge').textContent  = ticker;
   document.getElementById('chainChange').textContent = '';
@@ -1847,6 +1875,24 @@ document.querySelector('.global-search-btn').addEventListener('mousedown', funct
   openChain();
 });
 
+// ── HISTORY INIT: set the base state, and honor any deep link in the URL ──
+(function() {
+  var h = location.hash || '';
+  try {
+    history.replaceState({ view: 'dashboard' }, '', location.pathname + location.search);
+  } catch (err) {}
+  if (h.indexOf('#chain/') === 0) {
+    var t = decodeURIComponent(h.slice(7)).toUpperCase();
+    if (t) {
+      document.getElementById('globalSearch').value = t;
+      openChain();
+    }
+  } else if (h === '#about')    { showAbout(); }
+  else if (h === '#glossary')   { showGlossary(); }
+  else if (h === '#legal')      { showLegal(); }
+  else if (h === '#faq')        { showFAQ(); }
+})();
+
 // ── SHAREABLE IMAGE GENERATION ──
 var shareCanvasDataUrl = null;
 
@@ -1878,6 +1924,7 @@ function generateShareImage(sectionId) {
   secClone.querySelectorAll('.ac-dropdown').forEach(function(d){ d.remove(); });
   secClone.querySelectorAll('.share-btn').forEach(function(b){ b.remove(); });
   secClone.querySelectorAll('.col-with-tip').forEach(function(t){ t.remove(); });
+  secClone.querySelectorAll('.tip-spacer').forEach(function(t){ t.remove(); });
 
   // html2canvas renders <input> text poorly (vertical alignment / clipping).
   // Replace each input with a div that has the same text + styling, properly centered.
