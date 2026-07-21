@@ -148,11 +148,14 @@ td.r span{display:block;text-align:center;width:100%;}
 .rank{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text-muted);}
 .tcell{display:flex;align-items:center;justify-content:center;gap:8px;}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;background:var(--purple-light);color:var(--purple);border-radius:5px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;min-width:46px;}
+body.dark .tbadge{background:#9333ea;color:#ffffff;}
 .tname{font-size:12px;color:var(--text-secondary);}
 .ccode{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-secondary);}
 .cbadge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;}
 .cbadge.call{background:var(--green-light);color:var(--green);}
 .cbadge.put{background:var(--red-light);color:var(--red);}
+body.dark .cbadge.call{background:#15803d;color:#ffffff;}
+body.dark .cbadge.put{background:#b91c1c;color:#ffffff;}
 .gain{font-weight:700;font-size:13px;color:var(--green);}
 .price{font-size:13px;}
 .muted{color:var(--text-muted);}
@@ -204,6 +207,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
 .stock-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
 .stock-left{display:flex;align-items:center;gap:16px;}
 .stock-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--purple-light);color:var(--purple);padding:8px 18px;border:1px solid transparent;border-radius:8px;font-family:'DM Mono',monospace;font-size:30px;font-weight:700;line-height:1.2;}
+body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 .stock-info{display:flex;flex-direction:column;gap:4px;}
 .stock-name{font-size:22px;font-weight:700;letter-spacing:-0.3px;}
 .stock-sub{font-size:13px;color:var(--text-secondary);}
@@ -235,7 +239,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
   .nav-logo-circle svg{width:17px;height:17px;}
   .nav-brand{gap:8px;}
   .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
-  .back-btn{padding:6px 10px;font-size:12px;}
+  .back-btn{padding:6px 10px;font-size:12px;white-space:nowrap;}
+  .back-btn-full{display:none;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
   .global-search:focus{width:180px;}
   .global-search-btn{display:none;}
@@ -306,6 +311,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
 
   /* Tooltip popups */
   .tip-popup{width:200px;}
+  #chainPage .tip-popup{bottom:auto;top:calc(100% + 6px);}
 }
 </style>
 </head>
@@ -325,7 +331,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="global-search-btn">Go</button>
         <div class="ac-dropdown" id="globalSearch_ac"></div>
       </div>
-      <button class="back-btn" id="backBtn" onclick="showDashboard()">&#8592; Back to Dashboard</button>
+      <button class="back-btn" id="backBtn" onclick="showDashboard()">&#8592; Back<span class="back-btn-full"> to Dashboard</span></button>
     </div>
     <div class="nav-right">
       <span class="nav-badge open" id="marketBadge"><span class="live-dot green" id="marketDot"></span><span id="marketLabel">&nbsp;Market Open</span></span>
@@ -384,7 +390,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="filter-btn" onclick="setLim('g3','gLim',25,this);render('g')">Top 25</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',50,this);render('g')">Top 50</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',100,this);render('g')">Top 100</button>
-        <button class="filter-btn" onclick="setLim('g3','gLim',9999,this);render('g')">All</button>
+        <button class="filter-btn" onclick="setLim('g3','gLim',250,this);render('g')">All</button>
       </div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="gSearch" placeholder="Search ticker..." oninput="render('g')" autocomplete="off"><div class="ac-dropdown" id="gSearch_ac"></div></div>
     </div>
@@ -423,7 +429,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="filter-btn" onclick="setLim('v3','vLim',25,this);render('v')">Top 25</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',50,this);render('v')">Top 50</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',100,this);render('v')">Top 100</button>
-        <button class="filter-btn" onclick="setLim('v3','vLim',9999,this);render('v')">All</button>
+        <button class="filter-btn" onclick="setLim('v3','vLim',250,this);render('v')">All</button>
       </div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="vSearch" placeholder="Search ticker..." oninput="render('v')" autocomplete="off"><div class="ac-dropdown" id="vSearch_ac"></div></div>
     </div>
@@ -462,7 +468,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="filter-btn" onclick="setLim('o3','oLim',25,this);render('o')">Top 25</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',50,this);render('o')">Top 50</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',100,this);render('o')">Top 100</button>
-        <button class="filter-btn" onclick="setLim('o3','oLim',9999,this);render('o')">All</button>
+        <button class="filter-btn" onclick="setLim('o3','oLim',250,this);render('o')">All</button>
       </div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="oSearch" placeholder="Search ticker..." oninput="render('o')" autocomplete="off"><div class="ac-dropdown" id="oSearch_ac"></div></div>
     </div>
