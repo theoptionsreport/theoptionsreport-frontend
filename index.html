@@ -239,8 +239,9 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .nav-logo-circle svg{width:17px;height:17px;}
   .nav-brand{gap:8px;}
   .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
-  .back-btn{padding:6px 10px;font-size:12px;white-space:nowrap;}
-  .back-btn-full{display:none;}
+  .back-btn{padding:6px 10px;font-size:12px;flex-shrink:0;white-space:nowrap;}
+  body.chain-active .global-search{width:110px;}
+  body.chain-active .global-search:focus{width:130px;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
   .global-search:focus{width:180px;}
   .global-search-btn{display:none;}
@@ -331,7 +332,7 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         <button class="global-search-btn">Go</button>
         <div class="ac-dropdown" id="globalSearch_ac"></div>
       </div>
-      <button class="back-btn" id="backBtn" onclick="showDashboard()">&#8592; Back<span class="back-btn-full"> to Dashboard</span></button>
+      <button class="back-btn" id="backBtn" onclick="showDashboard()">&#8592; Back to Dashboard</button>
     </div>
     <div class="nav-right">
       <span class="nav-badge open" id="marketBadge"><span class="live-dot green" id="marketDot"></span><span id="marketLabel">&nbsp;Market Open</span></span>
