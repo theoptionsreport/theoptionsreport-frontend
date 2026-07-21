@@ -226,6 +226,8 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 .chain-stat-value{font-size:26px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;}
 .chain-stat-sub{font-size:12px;color:var(--text-muted);margin-top:6px;}
 .back-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--surface);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.back-text{display:inline;}
+.back-line1::after{content:" ";}
 .back-btn:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-light);}
 #backBtn{display:none;}
 @media(max-width:900px){.chain-stats-row{grid-template-columns:repeat(2,1fr);}}
@@ -240,6 +242,8 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .nav-brand{gap:8px;}
   .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
   .back-btn{padding:6px 10px;font-size:12px;flex-shrink:0;white-space:nowrap;}
+  .back-btn .back-text{display:flex;flex-direction:column;line-height:1.15;text-align:left;}
+  .back-btn .back-line1::after{content:none;}
   body.chain-active .global-search{width:110px;}
   body.chain-active .global-search:focus{width:130px;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
@@ -332,7 +336,7 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         <button class="global-search-btn">Go</button>
         <div class="ac-dropdown" id="globalSearch_ac"></div>
       </div>
-      <button class="back-btn" id="backBtn" onclick="showDashboard()">&#8592; Back to Dashboard</button>
+      <button class="back-btn" id="backBtn" onclick="showDashboard()"><span class="back-arrow">&#8592;</span><span class="back-text"><span class="back-line1">Back to</span><span class="back-line2">Dashboard</span></span></button>
     </div>
     <div class="nav-right">
       <span class="nav-badge open" id="marketBadge"><span class="live-dot green" id="marketDot"></span><span id="marketLabel">&nbsp;Market Open</span></span>
