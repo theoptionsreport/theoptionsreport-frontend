@@ -1890,7 +1890,10 @@ setupAutocomplete('oSearch', 'oSearch_ac', function() { render('o'); });
 ['gSearch', 'vSearch', 'oSearch'].forEach(function(id) {
   var el = document.getElementById(id);
   if (!el) return;
-  function sync() { el.classList.toggle('has-value', el.value.length > 0); el.classList.remove('finalized'); }
+  function sync() {
+    el.classList.toggle('has-value', el.value.length > 0);
+    if (el.value.length === 0) el.classList.remove('finalized');
+  }
   el.addEventListener('input', sync);
   el.addEventListener('change', sync);
   sync();
