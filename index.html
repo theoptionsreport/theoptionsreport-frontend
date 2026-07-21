@@ -110,7 +110,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .filter-btn{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-secondary);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .filter-btn:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-light);}
 .filter-btn.active{background:var(--purple);color:white;border-color:var(--purple);}
-.filter-search{padding:6px 10px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--text-primary);background:var(--bg);outline:none;width:155px;text-align:center;transition:border-color 0.15s;}
+.filter-search{padding:6px 10px 6px 32px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--text-primary);background:var(--bg);outline:none;width:155px;transition:border-color 0.15s;}
+.filter-search.has-value{padding:6px 10px;text-align:center;}
 .filter-search:focus{border-color:var(--purple);background:var(--surface);}
 .filter-search::placeholder{color:var(--text-muted);}
 .ml-auto{margin-left:auto;}
@@ -145,7 +146,7 @@ td{padding:11px 14px;font-size:13px;white-space:nowrap;}
 td.r{text-align:center;} td.c{text-align:center;}
 td.r span{display:block;text-align:center;width:100%;}
 .rank{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--text-muted);}
-.tcell{display:flex;align-items:center;gap:8px;}
+.tcell{display:flex;align-items:center;justify-content:center;gap:8px;}
 .tbadge{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;background:var(--purple-light);color:var(--purple);border-radius:5px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;min-width:46px;}
 .tname{font-size:12px;color:var(--text-secondary);}
 .ccode{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-secondary);}
@@ -263,7 +264,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
   .filter-btn{padding:5px 10px;font-size:11px;}
   .filter-divider{display:none;}
   .ml-auto{width:100%;margin-top:4px;}
-  .filter-search{width:100%;}
+  .filter-search{width:100%;padding:6px 10px;text-align:left;}
+  .filter-search.has-value{padding:6px 10px;text-align:left;}
 
   /* Horizontal scrolling tables */
   .table-card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -391,7 +393,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="share-btn" onclick="generateShareImage('section-g')" title="Generate shareable image">Share</button>
       </div>
       <table><thead><tr>
-        <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
+        <th class="c">#</th><th class="c">Ticker</th><th class="c">Contract</th><th class="r">Strike</th><th class="c">Type</th>
         <th class="r">% Gain</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
         <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="gBody"></tbody></table>
@@ -430,7 +432,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="share-btn" onclick="generateShareImage('section-v')" title="Generate shareable image">Share</button>
       </div>
       <table><thead><tr>
-        <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
+        <th class="c">#</th><th class="c">Ticker</th><th class="c">Contract</th><th class="r">Strike</th><th class="c">Type</th>
         <th class="r">% Change</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
         <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="vBody"></tbody></table>
@@ -469,7 +471,7 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
         <button class="share-btn" onclick="generateShareImage('section-o')" title="Generate shareable image">Share</button>
       </div>
       <table><thead><tr>
-        <th class="c">#</th><th>Ticker</th><th>Contract</th><th class="r">Strike</th><th class="c">Type</th>
+        <th class="c">#</th><th class="c">Ticker</th><th class="c">Contract</th><th class="r">Strike</th><th class="c">Type</th>
         <th class="r">% Change</th><th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;top:calc(100% + 6px);bottom:auto;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>
         <th class="r">Volume</th><th class="r">Open Interest</th><th class="c">Expiry</th>
       </tr></thead><tbody id="oBody"></tbody></table>
@@ -1116,8 +1118,8 @@ function strike(contract) {
 function rowHTML(r, rank) {
   return '<tr onclick="searchAndOpen(\'' + r.t + '\')" style="cursor:pointer;">'
     + '<td class="c rank">' + rank + '</td>'
-    + '<td><div class="tcell"><span class="tbadge">' + r.t + '</span></div></td>'
-    + '<td><span class="ccode">' + ccode(r.c) + '</span></td>'
+    + '<td class="c"><div class="tcell"><span class="tbadge">' + r.t + '</span></div></td>'
+    + '<td class="c"><span class="ccode">' + ccode(r.c) + '</span></td>'
     + '<td class="r"><span style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;">' + strike(r.c) + '</span></td>'
     + '<td class="c"><span class="cbadge ' + r.y + '">' + r.y + '</span></td>'
     + '<td class="r"><span style="font-weight:700;font-size:13px;color:' + (r.g === 0 ? 'var(--text-secondary)' : 'var(--green)') + ';">' + fmtPct(r.g) + '</span></td>'
@@ -1134,8 +1136,8 @@ function rowHTMLChange(r, rank) {
   var chgStr   = fmtPct(r.g);
   return '<tr onclick="searchAndOpen(\'' + r.t + '\')" style="cursor:pointer;">'
     + '<td class="c rank">' + rank + '</td>'
-    + '<td><div class="tcell"><span class="tbadge">' + r.t + '</span></div></td>'
-    + '<td><span class="ccode">' + ccode(r.c) + '</span></td>'
+    + '<td class="c"><div class="tcell"><span class="tbadge">' + r.t + '</span></div></td>'
+    + '<td class="c"><span class="ccode">' + ccode(r.c) + '</span></td>'
     + '<td class="r"><span style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;">' + strike(r.c) + '</span></td>'
     + '<td class="c"><span class="cbadge ' + r.y + '">' + r.y + '</span></td>'
     + '<td class="r"><span style="font-weight:700;font-size:13px;color:' + chgColor + ';">' + chgStr + '</span></td>'
@@ -1433,7 +1435,7 @@ function renderChainTable() {
       + '</div>'
       + '<div class="expiry-body' + (isOpen ? ' open' : '') + '" id="' + groupId + '">'
       +   '<table><thead><tr>'
-      +     '<th>Contract</th><th class="r">Strike</th><th class="c">Type</th><th class="r">% Change</th>'
+      +     '<th class="c">Contract</th><th class="r">Strike</th><th class="c">Type</th><th class="r">% Change</th>'
       +     '<th class="r">Open</th><th class="r"><span class="tip-spacer" style="display:inline-block;width:14px;"></span> Price <span class="col-with-tip" style="display:inline-flex;"><span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup" style="text-transform:none;letter-spacing:normal;">The price shown is the Fair Market Value (FMV) — a real-time estimate of what a contract is currently worth, rather than a last-traded price. See the Glossary for more.</span></span></th>'
       +     '<th class="r">Volume</th><th class="r">Open Interest</th>'
       +     '<th class="r"><span class="col-with-tip"><span class="tip-spacer" style="display:inline-block;width:14px;"></span>Delta<span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span><span class="tip-popup">Delta measures how much the option price is expected to move for every $1 change in the underlying stock. A Delta of 0.50 means the option gains $0.50 if the stock rises $1.</span></span></th>'
@@ -1467,7 +1469,7 @@ function renderChainTable() {
       }
 
       html += '<tr' + (itm ? ' class="itm-row"' : '') + '>'
-        + '<td><span class="ccode">' + ccode(c.c) + '</span></td>'
+        + '<td class="c"><span class="ccode">' + ccode(c.c) + '</span></td>'
         + '<td class="r"><span style="font-size:13px;font-weight:600;">' + strike(c.c) + '</span></td>'
         + '<td class="c"><span class="cbadge ' + c.y + '">' + c.y + '</span></td>'
         + '<td class="r"><span style="font-weight:700;font-size:13px;color:' + chgColor + ';">' + chgStr + '</span></td>'
@@ -1810,7 +1812,9 @@ function showACSuggestions(inputId, dropdownId, onSelect) {
     items[i].addEventListener('mousedown', function(e) {
       e.preventDefault();
       input.value = this.getAttribute('data-ticker');
+      if (input.classList.contains('filter-search')) input.classList.add('has-value');
       dropdown.classList.remove('open');
+      input.blur();
       if (onSelect) onSelect();
     });
   }
@@ -1826,6 +1830,7 @@ function setupAutocomplete(inputId, dropdownId, onSelect) {
   });
 
   input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !dropdown.classList.contains('open')) { input.blur(); return; }
     if (!dropdown.classList.contains('open')) return;
     var items = dropdown.getElementsByClassName('ac-item');
     if (!items.length) return;
@@ -1843,8 +1848,11 @@ function setupAutocomplete(inputId, dropdownId, onSelect) {
       items[Math.max(current - 1, 0)].classList.add('highlighted');
     } else if (e.key === 'Enter' && current >= 0) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       input.value = items[current].getAttribute('data-ticker');
+      if (input.classList.contains('filter-search')) input.classList.add('has-value');
       dropdown.classList.remove('open');
+      input.blur();
       if (onSelect) onSelect();
     } else if (e.key === 'Escape') {
       dropdown.classList.remove('open');
@@ -1862,16 +1870,29 @@ setupAutocomplete('gSearch', 'gSearch_ac', function() { render('g'); });
 setupAutocomplete('vSearch', 'vSearch_ac', function() { render('v'); });
 setupAutocomplete('oSearch', 'oSearch_ac', function() { render('o'); });
 
+// Table search boxes: center the ticker once there's content, but keep the
+// caret-before-the-placeholder look while empty. A MutationObserver also catches
+// programmatic value changes (e.g. clearing on reset).
+['gSearch', 'vSearch', 'oSearch'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  function sync() { el.classList.toggle('has-value', el.value.length > 0); }
+  el.addEventListener('input', sync);
+  el.addEventListener('change', sync);
+  sync();
+});
+
 document.getElementById('globalSearch').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
     var dropdown = document.getElementById('globalSearch_ac');
     // If a suggestion is highlighted, setupAutocomplete already handled it
-    if (!dropdown.classList.contains('open')) openChain();
+    if (!dropdown.classList.contains('open')) { this.blur(); openChain(); }
   }
 });
 document.querySelector('.global-search-btn').addEventListener('mousedown', function(e) {
   e.preventDefault();
   document.getElementById('globalSearch_ac').classList.remove('open');
+  document.getElementById('globalSearch').blur();
   openChain();
 });
 
