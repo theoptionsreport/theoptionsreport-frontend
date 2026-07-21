@@ -236,8 +236,8 @@ body.dark .legal-disclaimer-box{background:#422006;border-color:#78350f;color:#f
   .nav-brand{gap:8px;}
   .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
   .back-btn{padding:6px 10px;font-size:12px;}
-  .global-search{width:130px;padding:6px 10px 6px 28px;font-size:16px;}
-  .global-search:focus{width:150px;}
+  .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
+  .global-search:focus{width:180px;}
   .global-search-btn{display:none;}
   .nav-time,.nav-badge,.nav-x-link{display:none;}
   body.chain-active .theme-toggle{display:none;}
@@ -1901,6 +1901,19 @@ document.querySelector('.global-search-btn').addEventListener('mousedown', funct
   document.getElementById('globalSearch').blur();
   openChain();
 });
+
+// ── RESPONSIVE PLACEHOLDER: shorter search hint on mobile ──
+(function() {
+  var gs = document.getElementById('globalSearch');
+  if (!gs) return;
+  var mq = window.matchMedia('(max-width:768px)');
+  function setPlaceholder() {
+    gs.setAttribute('placeholder', mq.matches ? 'Search Ticker...' : 'Search any ticker...');
+  }
+  setPlaceholder();
+  if (mq.addEventListener) mq.addEventListener('change', setPlaceholder);
+  else if (mq.addListener) mq.addListener(setPlaceholder);
+})();
 
 // ── HISTORY INIT: set the base state, and honor any deep link in the URL ──
 (function() {
