@@ -1666,7 +1666,7 @@ function openChain() {
   document.getElementById('dashContent').style.display = 'none';
   document.getElementById('dashFooter').style.display  = 'none';
   document.getElementById('chainPage').style.display   = 'block';
-  document.getElementById('backBtn').style.display     = 'flex';
+  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.add('chain-active');
   window.scrollTo(0, 0);
   pushView({ view: 'chain', ticker: ticker }, '#chain/' + encodeURIComponent(ticker));
