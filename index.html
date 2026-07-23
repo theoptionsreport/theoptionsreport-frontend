@@ -242,11 +242,13 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .nav-brand{gap:8px;}
   .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
   body.chain-active .back-btn{display:none;}
+  body.footer-active .back-btn{display:none;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
   .global-search:focus{width:180px;}
   .global-search-btn{display:none;}
   .nav-time,.nav-badge,.nav-x-link{display:none;}
   body.chain-active .theme-toggle{display:none;}
+  body.footer-active .theme-toggle{display:none;}
 
   /* Main content */
   .main{padding:16px 12px 40px;}
@@ -1586,6 +1588,7 @@ function showDashboard() {
   document.getElementById('dashFooter').style.display    = 'flex';
   document.getElementById('backBtn').style.display       = 'none';
   document.body.classList.remove('chain-active');
+  document.body.classList.remove('footer-active');
   document.getElementById('globalSearch').value          = '';
   window.scrollTo(0, 0);
   pushView({ view: 'dashboard' }, location.pathname + location.search);
@@ -1600,8 +1603,9 @@ function showAbout() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('aboutPage').style.display     = 'block';
-  document.getElementById('backBtn').style.display       = 'flex';
+  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
+  document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
   pushView({ view: 'about' }, '#about');
 }
@@ -1615,8 +1619,9 @@ function showGlossary() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('glossaryPage').style.display  = 'block';
-  document.getElementById('backBtn').style.display       = 'flex';
+  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
+  document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
   pushView({ view: 'glossary' }, '#glossary');
 }
@@ -1630,8 +1635,9 @@ function showLegal() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('legalPage').style.display     = 'block';
-  document.getElementById('backBtn').style.display       = 'flex';
+  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
+  document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
   pushView({ view: 'legal' }, '#legal');
 }
@@ -1645,8 +1651,9 @@ function showFAQ() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('faqPage').style.display       = 'block';
-  document.getElementById('backBtn').style.display       = 'flex';
+  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
+  document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
   pushView({ view: 'faq' }, '#faq');
 }
@@ -1668,6 +1675,7 @@ function openChain() {
   document.getElementById('chainPage').style.display   = 'block';
   if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.add('chain-active');
+  document.body.classList.remove('footer-active');
   window.scrollTo(0, 0);
   pushView({ view: 'chain', ticker: ticker }, '#chain/' + encodeURIComponent(ticker));
 
