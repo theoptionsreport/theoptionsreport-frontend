@@ -40,6 +40,7 @@ body.dark .itm-row{background:#1f2937;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;-webkit-font-smoothing:antialiased;}
 nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm);}
 .nav-inner{max-width:1400px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-inner > div:first-child{gap:32px;}
 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
 .nav-logo-circle{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),#15803d);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(26,158,74,0.3);}
 .nav-title{font-size:17px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
@@ -321,7 +322,7 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 <body>
 <nav>
   <div class="nav-inner">
-    <div style="display:flex;align-items:center;gap:32px;">
+    <div style="display:flex;align-items:center;">
       <a class="nav-brand" href="#">
         <div class="nav-logo-circle">
           <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 17l6-6 4 4 6-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M16 7h4v4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
