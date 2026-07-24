@@ -39,14 +39,14 @@ body.dark .itm-row{background:#1f2937;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;-webkit-font-smoothing:antialiased;}
 nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm);}
-.nav-inner{max-width:1400px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;}
-.nav-inner > div:first-child{gap:32px;}
-.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:flex-start;}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;margin-right:32px;}
 .nav-logo-circle{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),#15803d);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(26,158,74,0.3);}
 .nav-title{font-size:17px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;}
 .nav-title span{color:var(--green);}
 .nav-right{display:flex;align-items:center;gap:16px;}
-.global-search-wrap{position:relative;display:flex;align-items:center;}
+.nav-right-group{display:flex;align-items:center;gap:32px;}
+.global-search-wrap{position:relative;display:flex;align-items:center;margin-right:auto;}
 .global-search{padding:7px 46px 7px 34px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-primary);background:var(--bg);outline:none;width:210px;transition:all 0.2s;}
 .global-search:focus{border-color:var(--purple);background:var(--surface);width:240px;box-shadow:0 0 0 3px var(--purple-light);}
 .global-search::placeholder{color:var(--text-muted);}
@@ -236,13 +236,13 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 /* ── MOBILE RESPONSIVENESS (768px and below) ── */
 @media(max-width:768px) {
   /* Navbar */
-  .nav-inner{padding:0 14px;height:56px;gap:8px;}
+  .nav-inner{padding:0 14px;height:56px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;}
   .nav-title{font-size:14px;max-width:78px;}
   .nav-logo-circle{width:32px;height:32px;}
   .nav-logo-circle svg{width:17px;height:17px;}
-  .nav-brand{gap:8px;}
-  .nav-inner > div:first-child{gap:10px;flex:1;min-width:0;}
-  .global-search-wrap{margin-left:auto;margin-right:auto;}
+  .nav-brand{gap:8px;margin-right:0;}
+  .global-search-wrap{margin-right:0;justify-self:center;}
+  .nav-right-group{gap:0;}
   body.chain-active .back-btn{display:none;}
   body.footer-active .back-btn{display:none;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
@@ -324,32 +324,32 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 <body>
 <nav>
   <div class="nav-inner">
-    <div style="display:flex;align-items:center;">
-      <a class="nav-brand" href="#">
-        <div class="nav-logo-circle">
-          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 17l6-6 4 4 6-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M16 7h4v4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-        </div>
-        <span class="nav-title">The <span>Options</span> Report</span>
-      </a>
-      <div class="global-search-wrap ac-wrap">
-        <svg class="gsearch-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input class="global-search" type="text" id="globalSearch" placeholder="Search any ticker..." autocomplete="off">
-        <button class="global-search-btn">Go</button>
-        <div class="ac-dropdown" id="globalSearch_ac"></div>
+    <a class="nav-brand" href="#">
+      <div class="nav-logo-circle">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 17l6-6 4 4 6-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M16 7h4v4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
       </div>
-      <button class="back-btn" id="backBtn" onclick="showDashboard()"><span class="back-arrow">&#8592;</span><span class="back-text"><span class="back-line1">Back to</span><span class="back-line2">Dashboard</span></span></button>
+      <span class="nav-title">The <span>Options</span> Report</span>
+    </a>
+    <div class="global-search-wrap ac-wrap">
+      <svg class="gsearch-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="global-search" type="text" id="globalSearch" placeholder="Search any ticker..." autocomplete="off">
+      <button class="global-search-btn">Go</button>
+      <div class="ac-dropdown" id="globalSearch_ac"></div>
     </div>
-    <div class="nav-right">
-      <span class="nav-badge open" id="marketBadge"><span class="live-dot green" id="marketDot"></span><span id="marketLabel">&nbsp;Market Open</span></span>
-      <span class="nav-time" id="clock">--:-- --</span>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" id="themeToggle">
-        <svg id="themeIconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        <svg id="themeIconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <a href="https://x.com/theoptionsrep" class="nav-x-link" target="_blank">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        @theoptionsrep
-      </a>
+    <div class="nav-right-group">
+      <button class="back-btn" id="backBtn" onclick="showDashboard()"><span class="back-arrow">&#8592;</span><span class="back-text"><span class="back-line1">Back to</span><span class="back-line2">Dashboard</span></span></button>
+      <div class="nav-right">
+        <span class="nav-badge open" id="marketBadge"><span class="live-dot green" id="marketDot"></span><span id="marketLabel">&nbsp;Market Open</span></span>
+        <span class="nav-time" id="clock">--:-- --</span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" id="themeToggle">
+          <svg id="themeIconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg id="themeIconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="https://x.com/theoptionsrep" class="nav-x-link" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @theoptionsrep
+        </a>
+      </div>
     </div>
   </div>
 </nav>
