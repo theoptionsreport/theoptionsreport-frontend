@@ -236,13 +236,13 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 /* ── MOBILE RESPONSIVENESS (768px and below) ── */
 @media(max-width:768px) {
   /* Navbar */
-  .nav-inner{padding:0 14px;height:56px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;}
+  .nav-inner{padding:0 14px;height:56px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;position:relative;}
   .nav-title{font-size:14px;max-width:78px;}
   .nav-logo-circle{width:32px;height:32px;}
   .nav-logo-circle svg{width:17px;height:17px;}
   .nav-brand{gap:8px;margin-right:0;}
-  .global-search-wrap{margin-right:0;justify-self:center;}
-  .nav-right-group{gap:0;}
+  .global-search-wrap{position:absolute;left:50%;transform:translateX(-50%);margin-right:0;}
+  .nav-right-group{gap:0;justify-self:end;}
   body.chain-active .back-btn{display:none;}
   body.footer-active .back-btn{display:none;}
   .global-search{width:160px;padding:6px 10px 6px 30px;font-size:16px;}
@@ -318,6 +318,16 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   /* Tooltip popups */
   .tip-popup{width:200px;}
   #chainPage .tip-popup{bottom:auto;top:calc(100% + 6px);}
+}
+
+/* Narrow phones: shrink centered search bar so it can't crowd the logo */
+@media(max-width:389px) {
+  .global-search{width:140px;}
+  .global-search:focus{width:150px;}
+}
+@media(max-width:359px) {
+  .global-search{width:118px;}
+  .global-search:focus{width:128px;}
 }
 </style>
 </head>
