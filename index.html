@@ -91,6 +91,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .page-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px;}
 .header-date{font-size:13px;color:var(--text-muted);font-family:'DM Mono',monospace;text-align:right;}
 .last-updated-bar{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--text-secondary);font-family:'DM Mono',monospace;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px 6px 12px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.updated-row{display:contents;}
+.mobile-market-badge{display:none;}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);position:relative;transition:box-shadow 0.2s;}
 .stat-card:hover{box-shadow:var(--shadow-md);}
@@ -249,6 +251,9 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .global-search:focus{width:180px;}
   .global-search-btn{display:none;}
   .nav-time,.nav-badge,.nav-x-link{display:none;}
+  .updated-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .updated-row .last-updated-bar{margin-bottom:16px;}
+  .mobile-market-badge{display:flex;margin-bottom:16px;flex-shrink:0;}
 
   /* Main content */
   .main{padding:16px 12px 40px;}
@@ -370,9 +375,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
     </div>
   </div>
 
-  <div class="last-updated-bar" id="lastUpdatedBar">
-    <span class="live-dot green"></span>
-    <span id="lastUpdatedText">Last updated: --:-- --</span>
+  <div class="updated-row">
+    <div class="last-updated-bar" id="lastUpdatedBar">
+      <span class="live-dot green"></span>
+      <span id="lastUpdatedText">Last updated: --:-- --</span>
+    </div>
+    <span class="nav-badge mobile-market-badge open" id="dashMarketBadge"><span class="live-dot green" id="dashMarketDot"></span><span id="dashMarketLabel">&nbsp;Market Open</span></span>
   </div>
 
   <div class="stats-row">
@@ -511,9 +519,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         </div>
       </div>
     </div>
-    <div class="last-updated-bar" id="chainLastUpdatedBar">
-      <span class="live-dot green"></span>
-      <span id="chainLastUpdatedText">Last updated: --:-- --</span>
+    <div class="updated-row">
+      <div class="last-updated-bar" id="chainLastUpdatedBar">
+        <span class="live-dot green"></span>
+        <span id="chainLastUpdatedText">Last updated: --:-- --</span>
+      </div>
+      <span class="nav-badge mobile-market-badge open" id="chainMarketBadge"><span class="live-dot green" id="chainMarketDot"></span><span id="chainMarketLabel">&nbsp;Market Open</span></span>
     </div>
     <div class="chain-stats-row" id="chainStats"></div>
     <div class="table-filters" style="border-radius:var(--radius);margin-bottom:16px;">
@@ -1228,10 +1239,23 @@ function updateMarketStatus() {
     else if (t >= 960 && t < 1200) state = 'afterhours';
   }
   badge.className = 'nav-badge ' + state;
-  if (state === 'open')       { dot.className = 'live-dot green'; lbl.textContent = ' Market Open'; }
-  else if (state === 'premarket')  { dot.className = 'live-dot amber'; lbl.textContent = ' Pre-Market'; }
-  else if (state === 'afterhours') { dot.className = 'live-dot amber'; lbl.textContent = ' After Hours'; }
-  else                             { dot.className = 'live-dot red';   lbl.textContent = ' Market Closed'; }
+  var labelText = ' Market Closed';
+  var dotClass  = 'live-dot red';
+  if (state === 'open')            { dotClass = 'live-dot green'; labelText = ' Market Open'; }
+  else if (state === 'premarket')  { dotClass = 'live-dot amber'; labelText = ' Pre-Market'; }
+  else if (state === 'afterhours') { dotClass = 'live-dot amber'; labelText = ' After Hours'; }
+  dot.className = dotClass;
+  lbl.textContent = labelText;
+
+  // Keep the mobile badges (dashboard + chain page) in sync with the navbar badge
+  ['dash', 'chain'].forEach(function(prefix) {
+    var b = document.getElementById(prefix + 'MarketBadge');
+    var d = document.getElementById(prefix + 'MarketDot');
+    var l = document.getElementById(prefix + 'MarketLabel');
+    if (b) b.className = 'nav-badge mobile-market-badge ' + state;
+    if (d) d.className = dotClass;
+    if (l) l.textContent = labelText;
+  });
 }
 
 function updateClock() {
