@@ -1707,6 +1707,10 @@ function openChain() {
   // Show chain page immediately with loading state
   document.getElementById('dashContent').style.display = 'none';
   document.getElementById('dashFooter').style.display  = 'none';
+  document.getElementById('aboutPage').style.display    = 'none';
+  document.getElementById('glossaryPage').style.display = 'none';
+  document.getElementById('legalPage').style.display    = 'none';
+  document.getElementById('faqPage').style.display      = 'none';
   document.getElementById('chainPage').style.display   = 'block';
   if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.add('chain-active');
