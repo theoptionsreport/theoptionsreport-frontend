@@ -365,6 +365,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 .share-capture .table-card-title{font-size:15px;}
 .share-capture td{padding:11px 14px;font-size:13px;}
 .share-capture thead th{padding:9px 14px;font-size:11px;}
+/* Table rows fade in via animation. Cloning restarts that animation, so the
+   capture would otherwise photograph rows mid-fade at partial opacity — the
+   cause of washed-out share images. Force the finished state instead. */
+.share-capture tbody tr{animation:none;opacity:1;transform:none;}
+.share-capture .live-dot{animation:none;opacity:1;transform:none;}
+.share-capture *,.share-capture *::before,.share-capture *::after{animation:none !important;transition:none !important;}
 </style>
 </head>
 <body>
@@ -2119,16 +2125,10 @@ function generateShareImage(sectionId) {
   // first-ever capture can come out soft/dull because fonts aren't settled yet.
   var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
 
-  // Mobile browsers cap canvas size; a 3x scale (3600px) exceeds that limit and
-  // silently rasterizes at lower fidelity, producing thin/faded text. Using 2x
-  // (2400px) stays within the limit so text renders at full density.
-  // Desktop is unaffected and keeps 3x.
-  var captureScale = (window.innerWidth <= 768) ? 2 : 3;
-
   fontsReady.then(function() {
     return html2canvas(captureWrap, {
       backgroundColor: bgColor,
-      scale: captureScale,
+      scale: 3,
       logging: false,
       useCORS: true
     });
