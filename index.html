@@ -2119,10 +2119,16 @@ function generateShareImage(sectionId) {
   // first-ever capture can come out soft/dull because fonts aren't settled yet.
   var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
 
+  // Mobile browsers cap canvas size; a 3x scale (3600px) exceeds that limit and
+  // silently rasterizes at lower fidelity, producing thin/faded text. Using 2x
+  // (2400px) stays within the limit so text renders at full density.
+  // Desktop is unaffected and keeps 3x.
+  var captureScale = (window.innerWidth <= 768) ? 2 : 3;
+
   fontsReady.then(function() {
     return html2canvas(captureWrap, {
       backgroundColor: bgColor,
-      scale: 3,
+      scale: captureScale,
       logging: false,
       useCORS: true
     });
