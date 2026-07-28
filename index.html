@@ -20,7 +20,7 @@
 <meta name="twitter:title" content="The Options Report">
 <meta name="twitter:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='%231a9e4a'/><path d='M5 16l5-5 3.5 3.5 5.5-7' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M15 7h4v4' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- Privacy-friendly analytics by Plausible -->
@@ -48,6 +48,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .nav-right-group{display:flex;align-items:center;gap:32px;}
 .global-search-wrap{position:relative;display:flex;align-items:center;margin-right:auto;}
 .global-search{padding:7px 46px 7px 34px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-primary);background:var(--bg);outline:none;width:210px;transition:all 0.2s;}
+.global-search.finalized{text-align:center;padding-right:53px;}
 .global-search:focus{border-color:var(--purple);background:var(--surface);width:240px;box-shadow:0 0 0 3px var(--purple-light);}
 .global-search::placeholder{color:var(--text-muted);}
 .gsearch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;}
@@ -277,8 +278,8 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .filter-btn{padding:5px 10px;font-size:11px;}
   .filter-divider{display:none;}
   .ml-auto{width:100%;margin-top:4px;}
-  .filter-search{width:100%;padding:6px 10px;text-align:left;font-size:16px;}
-  .filter-search.has-value{padding:6px 10px;text-align:left;}
+  .filter-search{width:100%;padding:6px 10px 6px calc(50% - 54px);text-align:left;font-size:16px;}
+  .filter-search.has-value{padding:6px 10px;text-align:center;}
   .filter-search.finalized{text-align:center;}
   .global-search.finalized{text-align:center;padding-right:30px;}
 
@@ -1664,6 +1665,8 @@ function showDashboard() {
   document.body.classList.remove('chain-active');
   document.body.classList.remove('footer-active');
   document.getElementById('globalSearch').value          = '';
+  document.getElementById('globalSearch').classList.remove('has-value');
+  document.getElementById('globalSearch').classList.remove('finalized');
   window.scrollTo(0, 0);
   pushView({ view: 'dashboard' }, location.pathname + location.search);
 }
@@ -1740,8 +1743,16 @@ function toggleFAQ(qEl) {
 
 // ── OPEN CHAIN (same tab) ──
 function openChain() {
-  var ticker = document.getElementById('globalSearch').value.trim().toUpperCase();
+  var gs = document.getElementById('globalSearch');
+  var ticker = gs.value.trim().toUpperCase();
   if (!ticker) return;
+
+  // Normalize the box to the uppercase ticker and mark it finalized so it
+  // centers. Covers every route in: typing + Enter, the Go button, dropdown
+  // selection, clicking a contract row, deep links, and back/forward.
+  gs.value = ticker;
+  gs.classList.add('has-value');
+  gs.classList.add('finalized');
 
   // Show chain page immediately with loading state
   document.getElementById('dashContent').style.display = 'none';
