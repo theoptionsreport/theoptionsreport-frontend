@@ -13,12 +13,19 @@
 <meta property="og:title" content="The Options Report">
 <meta property="og:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
 <meta property="og:site_name" content="The Options Report">
+<meta property="og:url" content="https://theoptionsreport.io/">
+<meta property="og:image" content="https://theoptionsreport.io/social-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Options Report - the day's top options activity, updated continuously throughout the trading day.">
 
 <!-- Twitter / X -->
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@theoptionsrep">
 <meta name="twitter:title" content="The Options Report">
 <meta name="twitter:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
+<meta name="twitter:image" content="https://theoptionsreport.io/social-preview.png">
+<meta name="twitter:image:alt" content="The Options Report - the day's top options activity, updated continuously throughout the trading day.">
 
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -30,8 +37,8 @@
   plausible.init()
 </script>
 <style>
-:root{--green:#1a9e4a;--green-light:#e8f7ed;--green-mid:#c2ecd2;--purple:#6b21a8;--purple-light:#f3e8ff;--purple-mid:#d8b4fe;--red:#dc2626;--red-light:#fef2f2;--bg:#f7f8fa;--surface:#fff;--surface2:#f0f1f4;--border:#e4e6eb;--text-primary:#111827;--text-secondary:#6b7280;--text-muted:#9ca3af;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.07);--radius:12px;}
-body.dark{--green:#22c55e;--green-light:#052e16;--green-mid:#166534;--purple:#a855f7;--purple-light:#2e1065;--purple-mid:#7c3aed;--red:#ef4444;--red-light:#450a0a;--bg:#0f1115;--surface:#181a20;--surface2:#22252c;--border:#2a2e38;--text-primary:#f3f4f6;--text-secondary:#9ca3af;--text-muted:#6b7280;--shadow-sm:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 4px 16px rgba(0,0,0,0.4);}
+:root{--green:#1a9e4a;--green-light:#e8f7ed;--green-mid:#c2ecd2;--purple:#6b21a8;--purple-light:#f3e8ff;--purple-mid:#d8b4fe;--red:#dc2626;--red-light:#fef2f2;--blue:#2563eb;--orange:#ea580c;--bg:#f7f8fa;--surface:#fff;--surface2:#f0f1f4;--border:#e4e6eb;--text-primary:#111827;--text-secondary:#6b7280;--text-muted:#9ca3af;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.07);--radius:12px;}
+body.dark{--green:#22c55e;--green-light:#052e16;--green-mid:#166534;--purple:#a855f7;--purple-light:#2e1065;--purple-mid:#7c3aed;--red:#ef4444;--red-light:#450a0a;--blue:#60a5fa;--orange:#fb923c;--bg:#0f1115;--surface:#181a20;--surface2:#22252c;--border:#2a2e38;--text-primary:#f3f4f6;--text-secondary:#c2c9d4;--text-muted:#98a1b0;--shadow-sm:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 4px 16px rgba(0,0,0,0.4);}
 body.dark tbody tr:hover{background:#22252c;}
 body.dark .itm-row{background:#1f2937;}
 .theme-toggle{background:none;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);transition:all 0.15s;}
@@ -54,6 +61,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .gsearch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;}
 .global-search-btn{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:var(--purple);color:white;border:none;border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .global-search-btn:hover{background:#581c87;}
+body.dark .global-search-btn:hover{background:#c084fc;}
 .nav-badge{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;}
 .nav-badge.open{background:var(--green-light);border:1px solid var(--green-mid);color:var(--green);}
 .nav-badge.closed{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
@@ -68,8 +76,10 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .nav-x-link{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--text-secondary);font-size:13px;font-weight:500;padding:7px 14px;border:1px solid var(--border);border-radius:8px;transition:all 0.15s;}
 .nav-x-link:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-light);}
 .expiry-group{margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);}
-.expiry-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;cursor:pointer;background:var(--surface2);transition:background 0.15s;user-select:none;}
+.expiry-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;cursor:pointer;background:var(--surface2);transition:background 0.15s;user-select:none;border-radius:11px;}
+.expiry-group.open .expiry-header{border-radius:11px 11px 0 0;}
 .expiry-header:hover{background:#e8eaf0;}
+body.dark .expiry-header:hover{background:#2a2e38;}
 .expiry-header-left{display:flex;align-items:center;gap:12px;}
 .expiry-title{font-size:14px;font-weight:700;color:var(--text-primary);}
 .expiry-meta{font-size:12px;color:var(--text-secondary);}
@@ -97,11 +107,10 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);position:relative;transition:box-shadow 0.2s;}
 .stat-card:hover{box-shadow:var(--shadow-md);}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0;}
-.stat-card.green::before{background:linear-gradient(90deg,var(--green),#34d399);}
-.stat-card.purple::before{background:linear-gradient(90deg,var(--purple),#a855f7);}
-.stat-card.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa);}
-.stat-card.orange::before{background:linear-gradient(90deg,#ea580c,#fb923c);}
+.stat-card.green{background-image:linear-gradient(90deg,var(--green),#34d399);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.stat-card.purple{background-image:linear-gradient(90deg,var(--purple),#a855f7);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.stat-card.blue{background-image:linear-gradient(90deg,#2563eb,#60a5fa);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.stat-card.orange{background-image:linear-gradient(90deg,#ea580c,#fb923c);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
 .stat-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
 .stat-value{font-size:28px;font-weight:700;letter-spacing:-0.8px;line-height:1;font-family:'DM Mono',monospace;}
 .stat-value.green{color:var(--green);} .stat-value.purple{color:var(--purple);}
@@ -221,11 +230,11 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 .stock-change-label{font-size:12px;color:var(--text-secondary);margin-top:4px;text-align:right;}
 .chain-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
 .chain-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;}
-.chain-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0;}
-.chain-stat.green::before{background:linear-gradient(90deg,var(--green),#34d399);}
-.chain-stat.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa);}
-.chain-stat.red::before{background:linear-gradient(90deg,var(--red),#f87171);}
-.chain-stat.orange::before{background:linear-gradient(90deg,#ea580c,#fb923c);}
+.chain-stat.green{background-image:linear-gradient(90deg,var(--green),#34d399);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.chain-stat.blue{background-image:linear-gradient(90deg,#2563eb,#60a5fa);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.chain-stat.purple{background-image:linear-gradient(90deg,var(--purple),#a855f7);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.chain-stat.red{background-image:linear-gradient(90deg,var(--red),#f87171);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
+.chain-stat.orange{background-image:linear-gradient(90deg,#ea580c,#fb923c);background-size:100% 3px;background-repeat:no-repeat;background-position:top;background-clip:padding-box;}
 .chain-stat-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;}
 .chain-stat-value{font-size:26px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;}
 .chain-stat-sub{font-size:12px;color:var(--text-muted);margin-top:6px;}
@@ -426,8 +435,8 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   <div class="stats-row">
     <div class="stat-card green"><div class="stat-label">Top Gainer Today</div><div class="stat-value green" id="statGainVal">--</div><div class="stat-sub" id="statGainSub">Loading...</div></div>
     <div class="stat-card purple"><div class="stat-label">Most Active by Volume</div><div class="stat-value purple" id="statVolVal">--</div><div class="stat-sub" id="statVolSub">Loading...</div></div>
-    <div class="stat-card blue"><div class="stat-label">Highest Open Interest</div><div class="stat-value" style="color:#2563eb" id="statOiVal">--</div><div class="stat-sub" id="statOiSub">Loading...</div></div>
-    <div class="stat-card orange"><div class="stat-label col-with-tip">Put-Call Ratio <span class="tip-icon" onclick="toggleTip(this)">?</span><span class="tip-popup" style="left:0;right:auto;">The Put-Call Ratio is the total put volume divided by the total call volume. It's a widely used gauge of overall market sentiment.</span></div><div class="stat-value" style="color:#ea580c" id="statRatioVal">--</div><div class="stat-sub" id="statRatioSub">Loading...</div></div>
+    <div class="stat-card blue"><div class="stat-label">Highest Open Interest</div><div class="stat-value" style="color:var(--blue)" id="statOiVal">--</div><div class="stat-sub" id="statOiSub">Loading...</div></div>
+    <div class="stat-card orange"><div class="stat-label col-with-tip">Put-Call Ratio <span class="tip-icon" onclick="toggleTip(this)">?</span><span class="tip-popup" style="left:0;right:auto;">The Put-Call Ratio is the total put volume divided by the total call volume. It's a widely used gauge of overall market sentiment.</span></div><div class="stat-value" style="color:var(--orange)" id="statRatioVal">--</div><div class="stat-sub" id="statRatioSub">Loading...</div></div>
   </div>
 
   <!-- TABLE 1 -->
@@ -1511,7 +1520,7 @@ function renderChainTable() {
     var isOpen = false;
     var groupId = 'expgrp_' + exp.replace(/\//g,'');
 
-    html += '<div class="expiry-group">'
+    html += '<div class="expiry-group' + (isOpen ? ' open' : '') + '">'
       + '<div class="expiry-header" onclick="toggleExpiry(\'' + groupId + '\')">'
       +   '<div class="expiry-header-left">'
       +     '<span class="expiry-title">Expiry ' + exp + '</span>'
@@ -1584,9 +1593,11 @@ function toggleTheme() {
 function toggleExpiry(groupId) {
   var body  = document.getElementById(groupId);
   var arrow = document.getElementById('arrow_' + groupId);
+  var group = body.parentElement;
   var wasOpen = body.classList.contains('open');
   body.classList.toggle('open');
   arrow.classList.toggle('open');
+  if (group) group.classList.toggle('open');
 
   // If we just opened the section, jump instantly to the at-the-money divider
   if (!wasOpen) {
@@ -1842,15 +1853,14 @@ function buildChainPage(ticker, chain, stockPrice) {
 
   var bestContract = chain.length ? chain.reduce(function(a,b) { return a.g > b.g ? a : b; }) : null;
   var bestGain  = bestContract ? bestContract.g : 0;
-  var bestSub   = bestContract ? bestContract.t + ' ' + strike(bestContract.c) + ' ' + bestContract.y.charAt(0).toUpperCase() + bestContract.y.slice(1) + ' - Exp ' + bestContract.e : 'N/A';
-  var topCallOI = calls.length ? calls.reduce(function(a,b) { return a.i > b.i ? a : b; }) : null;
-  var topPutOI  = puts.length  ? puts.reduce(function(a,b)  { return a.i > b.i ? a : b; }) : null;
-  var callOI    = calls.reduce(function(s,c) { return s + c.i; }, 0);
-  var putOI     = puts.reduce(function(s,c)  { return s + c.i; }, 0);
-  var callOISub = topCallOI ? topCallOI.t + ' ' + strike(topCallOI.c) + ' Call - Exp ' + topCallOI.e : '';
-  var putOISub  = topPutOI  ? topPutOI.t  + ' ' + strike(topPutOI.c)  + ' Put - Exp '  + topPutOI.e  : '';
+  var bestSub   = bestContract ? strike(bestContract.c) + ' ' + bestContract.y.charAt(0).toUpperCase() + bestContract.y.slice(1) + ' - Exp ' + bestContract.e : 'N/A';
+  // Single contract with the highest open interest, call or put
+  var topOI     = chain.length ? chain.reduce(function(a,b) { return a.i > b.i ? a : b; }) : null;
+  var topOIVal  = topOI ? topOI.i : 0;
+  var topOISub  = topOI ? strike(topOI.c) + ' ' + topOI.y.charAt(0).toUpperCase() + topOI.y.slice(1) + ' - Exp ' + topOI.e : 'N/A';
   var callVol   = calls.reduce(function(s,c) { return s + c.v; }, 0);
   var putVol    = puts.reduce(function(s,c)  { return s + c.v; }, 0);
+  var totalVol  = callVol + putVol;
   var ratioNum  = callVol > 0 ? parseFloat((putVol / callVol).toFixed(2)) : null;
   var ratio     = ratioNum === null ? 'N/A' : ratioNum.toFixed(2);
   var sentiment = ratioNum === null ? 'N/A' : ratioNum <= 0.70 ? 'Bullish sentiment' : ratioNum <= 1.00 ? 'Neutral sentiment' : 'Bearish sentiment';
@@ -1859,10 +1869,10 @@ function buildChainPage(ticker, chain, stockPrice) {
 
   // Populate stat cards
   document.getElementById('chainStats').innerHTML =
-      '<div class="chain-stat green"><div class="chain-stat-label">Best Gain</div><div class="chain-stat-value" style="color:' + (bestGain === 0 ? 'var(--text-secondary)' : '#1a9e4a') + '">' + (chain.length ? fmtPct(bestGain) : 'N/A') + '</div><div class="chain-stat-sub">' + bestSub + '</div></div>'
-    + '<div class="chain-stat blue"><div class="chain-stat-label">Call Open Interest</div><div class="chain-stat-value" style="color:#2563eb">' + fmt(callOI) + '</div><div class="chain-stat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + callOISub + '</div></div>'
-    + '<div class="chain-stat red"><div class="chain-stat-label">Put Open Interest</div><div class="chain-stat-value" style="color:#dc2626">' + fmt(putOI) + '</div><div class="chain-stat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + putOISub + '</div></div>'
-    + '<div class="chain-stat orange"><div class="chain-stat-label col-with-tip">Put-Call Ratio <span class="tip-icon" onclick="toggleTip(this)">?</span><span class="tip-popup" style="left:0;right:auto;">The Put-Call Ratio is the total put volume divided by the total call volume. It\'s a widely used gauge of overall market sentiment.</span></div><div class="chain-stat-value" style="color:#ea580c">' + ratio + '</div><div class="chain-stat-sub">' + sentiment + '</div></div>';
+      '<div class="chain-stat green"><div class="chain-stat-label">Best Gain</div><div class="chain-stat-value" style="color:' + (bestGain === 0 ? 'var(--text-secondary)' : 'var(--green)') + '">' + (chain.length ? fmtPct(bestGain) : 'N/A') + '</div><div class="chain-stat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + bestSub + '</div></div>'
+    + '<div class="chain-stat purple"><div class="chain-stat-label">Today\'s Total Volume</div><div class="chain-stat-value" style="color:var(--purple)">' + (chain.length ? fmt(totalVol) : 'N/A') + '</div><div class="chain-stat-sub">Across all contracts</div></div>'
+    + '<div class="chain-stat blue"><div class="chain-stat-label">Highest Open Interest</div><div class="chain-stat-value" style="color:var(--blue)">' + (chain.length ? fmt(topOIVal) : 'N/A') + '</div><div class="chain-stat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + topOISub + '</div></div>'
+    + '<div class="chain-stat orange"><div class="chain-stat-label col-with-tip">Put-Call Ratio <span class="tip-icon" onclick="toggleTip(this)">?</span><span class="tip-popup" style="left:0;right:auto;">The Put-Call Ratio is the total put volume divided by the total call volume. It\'s a widely used gauge of overall market sentiment.</span></div><div class="chain-stat-value" style="color:var(--orange)">' + ratio + '</div><div class="chain-stat-sub">' + sentiment + '</div></div>';
 
   // Store rows and reset filters
   chainAllRows = chain;
