@@ -247,7 +247,7 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 @media(max-width:900px){.chain-stats-row{grid-template-columns:repeat(2,1fr);}}
 
 /* ── MOBILE RESPONSIVENESS (768px and below) ── */
-@media(max-width:768px) {
+@media(max-width:767px) {
   /* Navbar */
   .nav-inner{padding:0 14px;height:56px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;position:relative;}
   .nav-title{font-size:14px;max-width:78px;}
@@ -333,6 +333,29 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .tip-popup{width:200px;}
   #chainPage .tip-popup{bottom:auto;top:calc(100% + 6px);}
 }
+
+/* ── TABLET RANGE (768px - 1100px) ──────────────────────────────
+   iPad Mini/Air, Surface Pro, ZenBook Fold, Nest Hub. These are too
+   wide for the phone layout but too narrow for the full desktop
+   navbar. Only whitespace is reduced here - every font size stays
+   at full desktop scale. */
+@media(min-width:768px) and (max-width:1100px) {
+  /* Navbar: drop the clock and back button, tighten spacing */
+  .nav-time{display:none;}
+  .back-btn{display:none;}
+  .nav-inner{padding:0 16px;}
+  .nav-brand{margin-right:16px;}
+  .nav-right-group{gap:16px;}
+  .nav-right{gap:12px;}
+  .global-search{width:200px;}
+  .global-search:focus{width:200px;}
+
+  /* Tables: allow horizontal scrolling so right-hand columns
+     (Expiry, Greeks) stay reachable */
+  .table-card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .expiry-body{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
+
 
 /* Narrow phones: shrink centered search bar so it can't crowd the logo */
 @media(max-width:389px) {
