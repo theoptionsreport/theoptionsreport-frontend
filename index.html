@@ -363,13 +363,13 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
    handle stays - there is ample room once the badge is out. */
 @media(min-width:768px) and (max-width:800px) {
   .nav-badge{display:none;}
-  /* Mirror the flash-card grid (2 cols, 16px gap) so the badge lands over
-     the "Most Active by Volume" card instead of being pinned to the edge.
+  /* Mirror the flash-card grid (2 cols, 16px gap) so the badge left-aligns
+     with the "Most Active by Volume" card instead of the screen edge.
      Phones keep space-between - the pill is wider than half a phone screen
      and would collide with the badge. */
   .updated-row{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-items:center;}
   .updated-row .last-updated-bar{justify-self:start;margin-bottom:16px;}
-  .mobile-market-badge{display:flex;justify-self:center;margin-bottom:16px;flex-shrink:0;}
+  .mobile-market-badge{display:flex;justify-self:start;margin-bottom:16px;flex-shrink:0;}
 }
 
 
