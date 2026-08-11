@@ -356,6 +356,19 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   .expiry-body{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 }
 
+/* ── NARROW TABLETS (768px - 800px) ─────────────────────────────
+   iPad Mini only. The navbar technically fits the market badge here
+   but with ~12px to spare, which reads as cramped. Move the badge
+   down beside "Last updated", mirroring the phone layout. The X
+   handle stays - there is ample room once the badge is out. */
+@media(min-width:768px) and (max-width:800px) {
+  .nav-badge{display:none;}
+  .updated-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .updated-row .last-updated-bar{margin-bottom:16px;}
+  .mobile-market-badge{display:flex;margin-bottom:16px;flex-shrink:0;}
+}
+
+
 
 /* Narrow phones: shrink centered search bar so it can't crowd the logo */
 @media(max-width:389px) {
@@ -1715,7 +1728,7 @@ function showAbout() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('aboutPage').style.display     = 'block';
-  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
+  if (window.innerWidth > 1100) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
   document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
@@ -1731,7 +1744,7 @@ function showGlossary() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('glossaryPage').style.display  = 'block';
-  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
+  if (window.innerWidth > 1100) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
   document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
@@ -1747,7 +1760,7 @@ function showLegal() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('legalPage').style.display     = 'block';
-  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
+  if (window.innerWidth > 1100) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
   document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
@@ -1763,7 +1776,7 @@ function showFAQ() {
   document.getElementById('dashContent').style.display   = 'none';
   document.getElementById('dashFooter').style.display    = 'none';
   document.getElementById('faqPage').style.display       = 'block';
-  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
+  if (window.innerWidth > 1100) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.remove('chain-active');
   document.body.classList.add('footer-active');
   window.scrollTo(0, 0);
@@ -1797,7 +1810,7 @@ function openChain() {
   document.getElementById('legalPage').style.display    = 'none';
   document.getElementById('faqPage').style.display      = 'none';
   document.getElementById('chainPage').style.display   = 'block';
-  if (window.innerWidth > 768) { document.getElementById('backBtn').style.display = 'flex'; }
+  if (window.innerWidth > 1100) { document.getElementById('backBtn').style.display = 'flex'; }
   document.body.classList.add('chain-active');
   document.body.classList.remove('footer-active');
   window.scrollTo(0, 0);
