@@ -1308,7 +1308,11 @@ function setLim(groupId, key, val, btn) {
   ST[key] = val;
 }
 
-function updateMarketStatus() {
+// Returns the current US market state: 'open', 'premarket', 'afterhours' or 'closed'.
+// Always calculated in Eastern Time regardless of where the visitor is, and
+// accounts for daylight saving. Used by both the status badge and the refresh
+// scheduler, so the two can never disagree.
+function getMarketState() {
   var now = new Date();
   var jan = new Date(now.getFullYear(), 0, 1);
   var jul = new Date(now.getFullYear(), 6, 1);
@@ -1318,16 +1322,19 @@ function updateMarketStatus() {
   var et  = new Date(utc + etOffset * 3600000);
   var day = et.getDay();
   var t   = et.getHours() * 60 + et.getMinutes();
+  if (day >= 1 && day <= 5) {
+    if (t >= 570 && t < 960)  return 'open';        // 9:30am - 4:00pm ET
+    if (t >= 240 && t < 570)  return 'premarket';   // 4:00am - 9:30am ET
+    if (t >= 960 && t < 1200) return 'afterhours';  // 4:00pm - 8:00pm ET
+  }
+  return 'closed';
+}
+
+function updateMarketStatus() {
+  var state = getMarketState();
   var badge = document.getElementById('marketBadge');
   var dot   = document.getElementById('marketDot');
   var lbl   = document.getElementById('marketLabel');
-  var isWD  = day >= 1 && day <= 5;
-  var state = 'closed';
-  if (isWD) {
-    if (t >= 570 && t < 960)  state = 'open';
-    else if (t >= 240 && t < 570)  state = 'premarket';
-    else if (t >= 960 && t < 1200) state = 'afterhours';
-  }
   badge.className = 'nav-badge ' + state;
   var labelText = ' Market Closed';
   var dotClass  = 'live-dot red';
@@ -1416,6 +1423,7 @@ function mapBackendContract(r) {
 }
 
 function fetchFromBackend(silent) {
+  lastFetchAt = Date.now();
   if (!silent) {
     ['gBody','vBody','oBody'].forEach(function(id) {
       document.getElementById(id).innerHTML =
@@ -1457,16 +1465,43 @@ function fetchFromBackend(silent) {
   });
 }
 
+// ── REFRESH SCHEDULING ──
+// A refresh only happens when all three of these are true:
+//   1. the tab is visible (no point updating a page nobody is looking at)
+//   2. the options market is open (9:30am - 4:00pm ET, weekdays)
+//   3. at least REFRESH_MS has passed since the last refresh
+//
+// The 30-second timer below sends nothing over the network - it only checks
+// those conditions. Actual requests happen at most once every 5 minutes.
+// It runs every 30 seconds rather than every 5 minutes so that the first
+// refresh after the opening bell, or after the tab becomes visible, is prompt.
+var REFRESH_MS  = 5 * 60 * 1000;   // 5 minutes between refreshes
+var MIN_GAP_MS  = 30 * 1000;       // never refresh twice within 30 seconds
+var lastFetchAt = 0;
+
+function maybeRefresh() {
+  if (document.hidden) return;
+  if (getMarketState() !== 'open') return;
+  if (Date.now() - lastFetchAt < REFRESH_MS) return;
+  fetchFromBackend(true);
+}
+
 if (BACKEND_MODE) {
-  // Initial load from backend
+  // Always load once on arrival, whatever the market is doing, so the page
+  // is never empty.
   fetchFromBackend(false);
-  // Sync refresh to the top of each minute
-  var now = new Date();
-  var msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-  setTimeout(function() {
+
+  setInterval(maybeRefresh, 30 * 1000);
+
+  // Returning to the tab refreshes immediately rather than waiting for the
+  // next scheduled check, so the visitor never looks at stale numbers. This
+  // fires even when the market is closed, so someone coming back in the
+  // evening still sees the final figures from the closing bell.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) return;
+    if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
     fetchFromBackend(true);
-    setInterval(function() { fetchFromBackend(true); }, 60 * 1000);
-  }, msUntilNextMinute);
+  });
 } else if (LIVE_MODE) {
   // Step 1 — Get complete list of all optionable tickers
   ['gBody','vBody','oBody'].forEach(function(id) {
