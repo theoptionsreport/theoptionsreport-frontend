@@ -27,8 +27,21 @@
 <meta name="twitter:image" content="https://theoptionsreport.io/social-preview.png">
 <meta name="twitter:image:alt" content="The Options Report - the day's top options activity, updated continuously throughout the trading day.">
 
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+<!-- Icons. The .ico is listed first because some older browsers take the first
+     one they understand. Sizes are given so browsers pick the right file rather
+     than shrinking a large one. -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<!-- iPhone and iPad. iOS cannot show transparency, so this file has the green
+     filled in deliberately. -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#16a34a">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- Privacy-friendly analytics by Plausible -->
@@ -1453,6 +1466,11 @@ function fetchFromBackend(silent) {
     byVol  = active;
     byOI   = oi;
 
+    // Use the backend's reported data age. If an older backend is deployed
+    // that does not send this field, fall back to the current time so the
+    // page still shows something sensible.
+    lastDataTimestamp = results[0].data_updated || new Date().toISOString();
+
     updateStatCards();
     render('all');
     updateLastUpdated();
@@ -1466,24 +1484,40 @@ function fetchFromBackend(silent) {
 }
 
 // ── REFRESH SCHEDULING ──
-// A refresh only happens when all three of these are true:
-//   1. the tab is visible (no point updating a page nobody is looking at)
-//   2. the options market is open (9:30am - 4:00pm ET, weekdays)
-//   3. at least REFRESH_MS has passed since the last refresh
+// The backend writes new data at exact 5-minute clock marks (9:30:00, 9:35:00
+// and so on). This page asks for it a few seconds after each mark, so the
+// numbers on screen are always the latest ones written.
 //
-// The 30-second timer below sends nothing over the network - it only checks
-// those conditions. Actual requests happen at most once every 5 minutes.
-// It runs every 30 seconds rather than every 5 minutes so that the first
-// refresh after the opening bell, or after the tab becomes visible, is prompt.
-var REFRESH_MS  = 5 * 60 * 1000;   // 5 minutes between refreshes
-var MIN_GAP_MS  = 30 * 1000;       // never refresh twice within 30 seconds
+// Minutes are taken from UTC. Eastern Time is a whole number of hours from
+// UTC, so a 5-minute mark in UTC is the same instant as one in ET - which
+// keeps visitors in every time zone in step with the backend.
+var REFRESH_INTERVAL_MINUTES = 5;
+var POLL_DELAY_SECONDS = 10;   // wait this long after each mark before asking
+var MIN_GAP_MS = 30 * 1000;    // never refresh twice within 30 seconds
 var lastFetchAt = 0;
 
-function maybeRefresh() {
-  if (document.hidden) return;
-  if (getMarketState() !== 'open') return;
-  if (Date.now() - lastFetchAt < REFRESH_MS) return;
-  fetchFromBackend(true);
+function msUntilNextPoll() {
+  var now  = new Date();
+  var next = new Date(now.getTime());
+  next.setUTCSeconds(POLL_DELAY_SECONDS, 0);
+  var step = REFRESH_INTERVAL_MINUTES - (next.getUTCMinutes() % REFRESH_INTERVAL_MINUTES);
+  next.setUTCMinutes(next.getUTCMinutes() + step);
+  var wait = next.getTime() - now.getTime();
+  // If we are inside the window just after a mark, catch this one instead
+  // of waiting a full cycle.
+  var thisMark = new Date(next.getTime() - REFRESH_INTERVAL_MINUTES * 60000);
+  if (thisMark.getTime() > now.getTime()) wait = thisMark.getTime() - now.getTime();
+  return wait;
+}
+
+function scheduleNextPoll() {
+  setTimeout(function() {
+    scheduleNextPoll();
+    if (document.hidden) return;
+    if (getMarketState() !== 'open') return;
+    if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
+    fetchFromBackend(true);
+  }, msUntilNextPoll());
 }
 
 if (BACKEND_MODE) {
@@ -1491,14 +1525,14 @@ if (BACKEND_MODE) {
   // is never empty.
   fetchFromBackend(false);
 
-  setInterval(maybeRefresh, 30 * 1000);
+  scheduleNextPoll();
 
   // Returning to the tab refreshes immediately rather than waiting for the
-  // next scheduled check, so the visitor never looks at stale numbers. This
-  // fires even when the market is closed, so someone coming back in the
-  // evening still sees the final figures from the closing bell.
+  // next mark - but only while the market is open. Outside market hours the
+  // data cannot have changed, so a refetch would be a wasted request.
   document.addEventListener('visibilitychange', function() {
     if (document.hidden) return;
+    if (getMarketState() !== 'open') return;
     if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
     fetchFromBackend(true);
   });
@@ -1522,12 +1556,23 @@ if (BACKEND_MODE) {
 }
 
 // ── UPDATE LAST UPDATED TIMESTAMP ──
+// Holds the time the DATA was last refreshed, as reported by the backend.
+// This is not the time the browser asked - if the market closed at 4:15pm and
+// you open the site at 7pm, this stays at 4:15pm, which is the truth.
+var lastDataTimestamp = null;
+
 function updateLastUpdated() {
-  var now = new Date();
-  var h   = now.getHours() % 12 || 12;
-  var m   = ('0' + now.getMinutes()).slice(-2);
-  var ap  = now.getHours() >= 12 ? 'PM' : 'AM';
-  var text = 'Last updated: ' + h + ':' + m + ' ' + ap + ' ET';
+  var text = 'Last updated: --';
+  if (lastDataTimestamp) {
+    var d = new Date(lastDataTimestamp);
+    if (!isNaN(d.getTime())) {
+      // Shown in the visitor's own local time, matching the navbar clock.
+      var h  = d.getHours() % 12 || 12;
+      var m  = ('0' + d.getMinutes()).slice(-2);
+      var ap = d.getHours() >= 12 ? 'PM' : 'AM';
+      text = 'Last updated: ' + h + ':' + m + ' ' + ap;
+    }
+  }
   var dashEl  = document.getElementById('lastUpdatedText');
   var chainEl = document.getElementById('chainLastUpdatedText');
   if (dashEl) dashEl.textContent = text;
@@ -1904,6 +1949,7 @@ function openChain() {
       .then(function(json) {
         var contracts = (json.data || []).map(mapBackendContract);
         var stockPrice = json.stock_price != null ? Number(json.stock_price) : null;
+        if (json.data_updated) lastDataTimestamp = json.data_updated;
         if (stockPrice != null) {
           document.getElementById('chainChange').textContent = '$' + stockPrice.toFixed(2);
           document.getElementById('chainChange').style.color = 'var(--text-primary)';
