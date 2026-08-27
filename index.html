@@ -1288,7 +1288,9 @@ function emptyRow() {
   return '<tr><td colspan="11" style="text-align:center;padding:28px;color:#9ca3af;font-size:13px">No contracts match your filters</td></tr>';
 }
 
-function render(which) {
+// paint() draws the tables from whatever rows are already in hand.
+// It does not talk to the backend.
+function paint(which) {
   var rows, data;
   if (which === 'g' || which === 'all') {
     data = filterData(byGain, 'gType', 'gAsset', 'gSearch', 'gLim');
@@ -1305,6 +1307,78 @@ function render(which) {
     rows = data.length ? data.map(function(r, i){return rowHTMLChange(r, i+1);}).join('') : emptyRow();
     document.getElementById('oBody').innerHTML = rows;
   }
+}
+
+// ── SERVER-SIDE FILTERING ──
+// The backend holds every contract and sends back only the top 250 that match
+// the current filters. So changing a filter or typing in a search box means
+// asking the backend a new question, rather than sifting rows already here.
+//
+// The Show buttons (Top 10/25/50/100/All) are NOT part of that question - the
+// backend always sends 250, so switching between them is instant and local.
+var TABLE_ENDPOINT = { g: '/api/top-gainers', v: '/api/most-active', o: '/api/highest-oi' };
+var SEARCH_DEBOUNCE_MS = 300;
+var lastQuery   = { g: null, v: null, o: null };
+var searchTimer = { g: null, v: null, o: null };
+
+function searchBoxValue(which) {
+  var el = document.getElementById(which + 'Search');
+  return el ? el.value.trim().toUpperCase() : '';
+}
+
+// A short description of what this table is currently asking for. If it has
+// not changed, there is nothing new to fetch.
+function filterSignature(which) {
+  return [ST[which + 'Type'], ST[which + 'Asset'], searchBoxValue(which)].join('|');
+}
+
+function fetchTable(which, signature) {
+  var params = [];
+  var searchText = searchBoxValue(which);
+  if (searchText) params.push('ticker=' + encodeURIComponent(searchText));
+  if (ST[which + 'Type']  !== 'all') params.push('type='  + encodeURIComponent(ST[which + 'Type']));
+  if (ST[which + 'Asset'] !== 'all') params.push('asset=' + encodeURIComponent(ST[which + 'Asset']));
+  var url = BACKEND_URL + TABLE_ENDPOINT[which] + (params.length ? '?' + params.join('&') : '');
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(json) {
+      // If the filters changed while this was in flight, this answer is out of
+      // date - drop it rather than letting it overwrite a newer one.
+      if (filterSignature(which) !== signature) return;
+      var mapped = (json.data || []).map(mapBackendContract);
+      if (which === 'g') byGain = mapped;
+      if (which === 'v') byVol  = mapped;
+      if (which === 'o') byOI   = mapped;
+      lastQuery[which] = signature;
+      if (json.data_updated) { lastDataTimestamp = json.data_updated; updateLastUpdated(); }
+      paint(which);
+    })
+    .catch(function(err) {
+      console.error('Filter fetch failed for ' + which + ':', err);
+    });
+}
+
+// render() is what every filter button and search box calls.
+// It decides whether the backend needs asking, then draws.
+function render(which) {
+  if (which === 'all') { render('g'); render('v'); render('o'); return; }
+  if (!BACKEND_MODE) { paint(which); return; }
+
+  var signature = filterSignature(which);
+  if (signature === lastQuery[which]) { paint(which); return; }
+
+  // Typing is debounced so that "NCLH" sends one request rather than four.
+  // Clicking a filter button is a single deliberate action, so it goes at once.
+  var searchChanged = lastQuery[which] === null ||
+                      signature.split('|')[2] !== lastQuery[which].split('|')[2];
+  clearTimeout(searchTimer[which]);
+  if (searchChanged) {
+    searchTimer[which] = setTimeout(function() { fetchTable(which, filterSignature(which)); }, SEARCH_DEBOUNCE_MS);
+  } else {
+    fetchTable(which, signature);
+  }
+  paint(which);
 }
 
 function setF(groupId, key, val, btn) {
@@ -1380,16 +1454,34 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-function updateStatCards() {
-  if (!DATA.length) return;
-  var topGain = byGain[0];
-  var topVol  = byVol[0];
-  var topOI   = byOI[0];
-  var calls   = DATA.filter(function(r) { return r.y === 'call'; });
-  var puts    = DATA.filter(function(r) { return r.y === 'put'; });
-  var callVol = calls.reduce(function(s,r) { return s + r.v; }, 0);
-  var putVol  = puts.reduce(function(s,r)  { return s + r.v; }, 0);
-  var ratioNum = callVol > 0 ? parseFloat((putVol / callVol).toFixed(2)) : null;
+// The four cards at the top always describe the WHOLE market - they are not
+// affected by the search box or the filters. Since the tables now only receive
+// the top 250 matching rows, these figures have to come from the backend,
+// which calculates them across every stored contract.
+//
+// The stats argument is optional: without it this falls back to calculating
+// from whatever is loaded, which is what the legacy non-backend mode needs.
+function updateStatCards(stats) {
+  var topGain, topVol, topOI, ratioNum;
+
+  if (stats) {
+    if (!stats.top_gainer && !stats.top_volume && !stats.top_oi) return;
+    topGain  = stats.top_gainer ? mapBackendContract(stats.top_gainer) : null;
+    topVol   = stats.top_volume ? mapBackendContract(stats.top_volume) : null;
+    topOI    = stats.top_oi     ? mapBackendContract(stats.top_oi)     : null;
+    ratioNum = stats.put_call_ratio != null ? Number(stats.put_call_ratio) : null;
+  } else {
+    if (!DATA.length) return;
+    topGain = byGain[0];
+    topVol  = byVol[0];
+    topOI   = byOI[0];
+    var calls   = DATA.filter(function(r) { return r.y === 'call'; });
+    var puts    = DATA.filter(function(r) { return r.y === 'put'; });
+    var callVol = calls.reduce(function(s,r) { return s + r.v; }, 0);
+    var putVol  = puts.reduce(function(s,r)  { return s + r.v; }, 0);
+    ratioNum = callVol > 0 ? parseFloat((putVol / callVol).toFixed(2)) : null;
+  }
+  if (!topGain || !topVol || !topOI) return;
   var ratio   = ratioNum === null ? 'N/A' : ratioNum.toFixed(2);
   var sent    = ratioNum === null ? 'Loading...' : ratioNum <= 0.70 ? 'Bullish sentiment' : ratioNum <= 1.00 ? 'Neutral sentiment' : 'Bearish sentiment';
 
@@ -1444,10 +1536,23 @@ function fetchFromBackend(silent) {
     });
   }
 
+  // Each table asks with whatever filters it currently has, so a scheduled
+  // refresh does not wipe out a search the visitor has typed. The stats call
+  // carries no filters - those four cards are always market-wide.
+  function tableUrl(which) {
+    var params = [];
+    var searchText = searchBoxValue(which);
+    if (searchText) params.push('ticker=' + encodeURIComponent(searchText));
+    if (ST[which + 'Type']  !== 'all') params.push('type='  + encodeURIComponent(ST[which + 'Type']));
+    if (ST[which + 'Asset'] !== 'all') params.push('asset=' + encodeURIComponent(ST[which + 'Asset']));
+    return BACKEND_URL + TABLE_ENDPOINT[which] + (params.length ? '?' + params.join('&') : '');
+  }
+
   Promise.all([
-    fetch(BACKEND_URL + '/api/top-gainers').then(function(r) { return r.json(); }),
-    fetch(BACKEND_URL + '/api/most-active').then(function(r) { return r.json(); }),
-    fetch(BACKEND_URL + '/api/highest-oi').then(function(r) { return r.json(); })
+    fetch(tableUrl('g')).then(function(r) { return r.json(); }),
+    fetch(tableUrl('v')).then(function(r) { return r.json(); }),
+    fetch(tableUrl('o')).then(function(r) { return r.json(); }),
+    fetch(BACKEND_URL + '/api/stats').then(function(r) { return r.json(); }).catch(function() { return null; })
   ]).then(function(results) {
     var gainers   = (results[0].data || []).map(mapBackendContract);
     var active    = (results[1].data || []).map(mapBackendContract);
@@ -1466,13 +1571,19 @@ function fetchFromBackend(silent) {
     byVol  = active;
     byOI   = oi;
 
+    // Record what each table is now holding, so a later filter change knows
+    // whether it needs to ask the backend again.
+    lastQuery.g = filterSignature('g');
+    lastQuery.v = filterSignature('v');
+    lastQuery.o = filterSignature('o');
+
     // Use the backend's reported data age. If an older backend is deployed
     // that does not send this field, fall back to the current time so the
     // page still shows something sensible.
     lastDataTimestamp = results[0].data_updated || new Date().toISOString();
 
-    updateStatCards();
-    render('all');
+    updateStatCards(results[3]);
+    paint('all');
     updateLastUpdated();
   }).catch(function(err) {
     console.error('Backend fetch failed:', err);
