@@ -4,28 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Options Report</title>
-<meta name="description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
+<meta name="description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated every five minutes throughout the trading day.">
 <meta name="keywords" content="options trading, top gainers, options chain, call options, put options, options volume, open interest, options data">
 <meta name="author" content="The Options Report">
 
 <!-- Open Graph / Facebook / iMessage -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Options Report">
-<meta property="og:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
+<meta property="og:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated every five minutes throughout the trading day.">
 <meta property="og:site_name" content="The Options Report">
 <meta property="og:url" content="https://theoptionsreport.io/">
 <meta property="og:image" content="https://theoptionsreport.io/social-preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Options Report - the day's top options activity, updated continuously throughout the trading day.">
+<meta property="og:image:alt" content="The Options Report - the day's top options activity, updated every five minutes throughout the trading day.">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@theoptionsrep">
 <meta name="twitter:title" content="The Options Report">
-<meta name="twitter:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated continuously throughout the trading day.">
+<meta name="twitter:description" content="Discover which options contracts are leading the market in gains, volume, and open interest. Free to use and updated every five minutes throughout the trading day.">
 <meta name="twitter:image" content="https://theoptionsreport.io/social-preview.png">
-<meta name="twitter:image:alt" content="The Options Report - the day's top options activity, updated continuously throughout the trading day.">
+<meta name="twitter:image:alt" content="The Options Report - the day's top options activity, updated every five minutes throughout the trading day.">
 
 <!-- Icons. The .ico is listed first because some older browsers take the first
      one they understand. Sizes are given so browsers pick the right file rather
@@ -625,7 +625,11 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
     <div class="updated-row">
       <div class="last-updated-bar" id="chainLastUpdatedBar">
         <span class="live-dot green"></span>
-        <span id="chainLastUpdatedText">Last updated: --:-- --</span>
+        <span class="col-with-tip">
+          <span id="chainLastUpdatedText">Last updated: --:-- --</span>
+          <span class="tip-icon" onclick="event.stopPropagation();toggleTip(this)">?</span>
+          <span class="tip-popup" style="left:0;right:auto;font-family:'DM Sans',sans-serif;">This time reflects when the data on screen was recorded. Chain pages do not refresh on their own &mdash; reopen the page for current figures.</span>
+        </span>
       </div>
       <span class="nav-badge mobile-market-badge open" id="chainMarketBadge"><span class="live-dot green" id="chainMarketDot"></span><span id="chainMarketLabel">&nbsp;Market Open</span></span>
     </div>
@@ -667,7 +671,7 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
       <p>The Options Report started as a solo project. As an options trader, I kept noticing that other platforms would present inaccurate, illiquid contracts as the day's top gainers — giving a misleading picture of what was actually happening in the market. I decided to take matters into my own hands, and started by posting the day's top gaining contracts on X. That account grew into the website you're looking at today: a simple, accurate, and easy-to-use platform for options traders.</p>
 
       <h2 class="about-heading">The Data</h2>
-      <p>This website is completely free to use. Options data is sourced from a professional third-party market data provider and refreshes every minute throughout the trading day, so you're always seeing a current picture of market activity.</p>
+      <p>This website is completely free to use. Options data is sourced from a professional third-party market data provider and refreshes every five minutes throughout the trading day, so you're always seeing a current picture of market activity.</p>
 
       <h2 class="about-heading">Get In Touch</h2>
       <p>Have feedback, questions, or ideas? I'd love to hear from you.</p>
@@ -845,7 +849,17 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
             <span class="faq-arrow">&#9660;</span>
           </div>
           <div class="faq-a">
-            <p>Options data on The Options Report updates every minute throughout the trading day, giving users a current picture of market activity.</p>
+            <p>Options data on The Options Report updates every five minutes throughout the trading day, giving users a current picture of market activity.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFAQ(this)">
+            <span>Do options chain pages update automatically?</span>
+            <span class="faq-arrow">&#9660;</span>
+          </div>
+          <div class="faq-a">
+            <p>Options chain pages load the most recent data available when you open them, and hold that data while you're viewing. They do not refresh on their own. To see updated figures, reopen the chain page. The "Last updated" time on the page always reflects when the data you're looking at was recorded.</p>
           </div>
         </div>
 
@@ -1378,7 +1392,15 @@ function render(which) {
   } else {
     fetchTable(which, signature);
   }
-  paint(which);
+
+  // Deliberately no redraw here. The table keeps showing what it already has
+  // until the backend's answer arrives, and fetchTable() draws it once.
+  //
+  // Redrawing at this point used to filter the rows already loaded in the
+  // browser, which meant every keystroke produced a flash of a partly-wrong
+  // table followed a moment later by the real one. Typing or deleting a
+  // four-letter ticker did that four times over. One correct redraw reads far
+  // better than two, the second of which corrects the first.
 }
 
 function setF(groupId, key, val, btn) {
@@ -1399,21 +1421,39 @@ function setLim(groupId, key, val, btn) {
 // Always calculated in Eastern Time regardless of where the visitor is, and
 // accounts for daylight saving. Used by both the status badge and the refresh
 // scheduler, so the two can never disagree.
+// Works out the New York time for the visitor, whatever clock they are on.
+//
+// This asks the browser's built-in timezone database directly for the time in
+// America/New_York. That database knows the real daylight saving rules and
+// when they change, so no arithmetic is needed here.
+//
+// The previous version guessed instead: it checked whether the VISITOR'S OWN
+// location observed daylight saving, and assumed New York matched. That works
+// from New York or California, but fails for anyone in a place that has no
+// daylight saving at all - Arizona, Hawaii, India, most of Asia, the UK in
+// winter. For those visitors it assumed New York was on winter time all year,
+// putting the market state an hour out through the summer. The backend has
+// always used the timezone database properly; this brings the site in line.
+var ET_PARTS = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/New_York',
+  weekday: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23'
+});
+
 function getMarketState() {
-  var now = new Date();
-  var jan = new Date(now.getFullYear(), 0, 1);
-  var jul = new Date(now.getFullYear(), 6, 1);
-  var isDST = now.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-  var etOffset = isDST ? -4 : -5;
-  var utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  var et  = new Date(utc + etOffset * 3600000);
-  var day = et.getDay();
-  var t   = et.getHours() * 60 + et.getMinutes();
-  if (day >= 1 && day <= 5) {
-    if (t >= 570 && t < 960)  return 'open';        // 9:30am - 4:00pm ET
-    if (t >= 240 && t < 570)  return 'premarket';   // 4:00am - 9:30am ET
-    if (t >= 960 && t < 1200) return 'afterhours';  // 4:00pm - 8:00pm ET
-  }
+  var parts = {};
+  var pieces = ET_PARTS.formatToParts(new Date());
+  for (var i = 0; i < pieces.length; i++) parts[pieces[i].type] = pieces[i].value;
+
+  var day = parts.weekday;
+  if (day === 'Sat' || day === 'Sun') return 'closed';
+
+  var t = parseInt(parts.hour, 10) * 60 + parseInt(parts.minute, 10);
+  if (t >= 570 && t < 960)  return 'open';        // 9:30am - 4:00pm ET
+  if (t >= 240 && t < 570)  return 'premarket';   // 4:00am - 9:30am ET
+  if (t >= 960 && t < 1200) return 'afterhours';  // 4:00pm - 8:00pm ET
   return 'closed';
 }
 
@@ -1450,6 +1490,17 @@ function updateClock() {
   var ap = now.getHours() >= 12 ? 'PM' : 'AM';
   document.getElementById('clock').textContent = h + ':' + m + ':' + s + ' ' + ap;
   updateMarketStatus();
+
+  // Safety net for the scheduled poll above. Browsers slow timers down in
+  // background tabs, stop them entirely on a sleeping laptop, and a window
+  // sitting behind another application still counts as "visible" - so a
+  // scheduled poll can arrive late or be skipped, and nothing would notice
+  // until five minutes later.
+  //
+  // This costs nothing: the clock already ticks every second and already calls
+  // getMarketState(). pollIfDue() makes no request unless a mark has genuinely
+  // passed uncollected, so this adds no network traffic at all.
+  pollIfDue();
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -1529,6 +1580,10 @@ function mapBackendContract(r) {
 
 function fetchFromBackend(silent) {
   lastFetchAt = Date.now();
+  // Record which 5-minute mark's data this fetch collects. Any fetch receives
+  // whatever the backend currently holds, which is the most recent mark that
+  // has landed - so the mark containing this moment is the one we now have.
+  lastFetchedMark = Math.floor(lastFetchAt / (REFRESH_INTERVAL_MINUTES * 60000)) * (REFRESH_INTERVAL_MINUTES * 60000);
   if (!silent) {
     ['gBody','vBody','oBody'].forEach(function(id) {
       document.getElementById(id).innerHTML =
@@ -1621,13 +1676,69 @@ function msUntilNextPoll() {
   return wait;
 }
 
+// Should this page still be asking the backend for data?
+//
+// The backend writes at 5-minute marks from 9:30am to 4:15pm ET. Trading stops
+// at 4:00pm - which is when the market badge flips to After Hours - but four
+// more writes still land at 4:00, 4:05, 4:10 and 4:15, capturing trades that
+// are reported after the bell.
+//
+// Polling used to stop the moment the badge stopped saying "open", which meant
+// those last four writes were never collected. A tab left open across 4:00pm
+// would sit showing 3:55pm data for the rest of the evening. Polling now
+// continues to 4:20pm, safely past the final write, then stops.
+var POLL_END_MINUTE = 16 * 60 + 20;   // 4:20pm ET
+
+function easternMinutes() {
+  var parts = {};
+  var pieces = ET_PARTS.formatToParts(new Date());
+  for (var i = 0; i < pieces.length; i++) parts[pieces[i].type] = pieces[i].value;
+  return parseInt(parts.hour, 10) * 60 + parseInt(parts.minute, 10);
+}
+
+function shouldPoll() {
+  var state = getMarketState();
+  if (state === 'open') return true;
+  // Keep going through the after-hours tail until the backend has finished
+  // writing for the day.
+  if (state === 'afterhours') return easternMinutes() <= POLL_END_MINUTE;
+  return false;
+}
+
+// Which 5-minute mark's data the page currently holds, as a moment in time.
+// Zero means nothing has been fetched yet.
+var lastFetchedMark = 0;
+
+// Is there a mark we have not collected yet?
+//
+// Asking "is there newer data?" instead of "is it exactly time?" is what makes
+// the page self-correcting. However late the check runs, the first one after a
+// mark sees that newer data exists and fetches it. It also declines a pointless
+// request when a check runs a little early, since no mark has landed yet.
+function markPassedSinceLastFetch() {
+  if (!lastFetchedMark) return true;              // nothing fetched yet
+  var interval = REFRESH_INTERVAL_MINUTES * 60000;
+  var currentMark = Math.floor(Date.now() / interval) * interval;
+  // Give the backend a moment to finish writing before asking for it.
+  if (Date.now() < currentMark + POLL_DELAY_SECONDS * 1000) return false;
+  return lastFetchedMark < currentMark;           // do we already hold it?
+}
+
+// The single place that decides whether to fetch. Every condition lives here,
+// so the scheduled poll and the per-second check can never disagree.
+function pollIfDue() {
+  if (!BACKEND_MODE) return;
+  if (document.hidden) return;
+  if (!shouldPoll()) return;
+  if (!markPassedSinceLastFetch()) return;
+  if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
+  fetchFromBackend(true);
+}
+
 function scheduleNextPoll() {
   setTimeout(function() {
     scheduleNextPoll();
-    if (document.hidden) return;
-    if (getMarketState() !== 'open') return;
-    if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
-    fetchFromBackend(true);
+    pollIfDue();
   }, msUntilNextPoll());
 }
 
@@ -1643,7 +1754,7 @@ if (BACKEND_MODE) {
   // data cannot have changed, so a refetch would be a wasted request.
   document.addEventListener('visibilitychange', function() {
     if (document.hidden) return;
-    if (getMarketState() !== 'open') return;
+    if (!shouldPoll()) return;
     if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
     fetchFromBackend(true);
   });
@@ -1667,27 +1778,84 @@ if (BACKEND_MODE) {
 }
 
 // ── UPDATE LAST UPDATED TIMESTAMP ──
-// Holds the time the DATA was last refreshed, as reported by the backend.
+// The dashboard and the options chain pages hold their data at DIFFERENT
+// moments, so they each need their own timestamp.
+//
+// The dashboard refreshes on 5-minute marks. A chain page loads once when you
+// open it and then holds - it has no timer. So while you sit on a chain page,
+// the dashboard may quietly refresh in the background. If both badges shared
+// one timestamp, the chain badge would climb 11:25, 11:30, 11:35 over data
+// that never moved from 11:20. Each badge now reads only its own value, so
+// neither page can stamp a time onto the other's data.
+//
 // This is not the time the browser asked - if the market closed at 4:15pm and
-// you open the site at 7pm, this stays at 4:15pm, which is the truth.
-var lastDataTimestamp = null;
+// you open the site at 7pm, it stays at 4:15pm, which is the truth.
+var lastDataTimestamp      = null;   // when the DASHBOARD data was written
+var chainDataTimestamp     = null;   // when the CHAIN PAGE data was written
 
-function updateLastUpdated() {
-  var text = 'Last updated: --';
-  if (lastDataTimestamp) {
-    var d = new Date(lastDataTimestamp);
-    if (!isNaN(d.getTime())) {
-      // Shown in the visitor's own local time, matching the navbar clock.
-      var h  = d.getHours() % 12 || 12;
-      var m  = ('0' + d.getMinutes()).slice(-2);
-      var ap = d.getHours() >= 12 ? 'PM' : 'AM';
-      text = 'Last updated: ' + h + ':' + m + ' ' + ap;
-    }
+// Turns a stored timestamp into the text shown on a badge.
+// Shown in the visitor's own local time, matching the navbar clock.
+//
+// The date is included whenever the time alone would be ambiguous:
+//
+//   1. The market is closed. At 4:20pm on a Tuesday, "Last updated: 4:15 PM"
+//      is fine - but the same text on Sunday afternoon reads as though the site
+//      updated that day. So once the session ends, the date stays on the badge
+//      until the next morning's first refresh.
+//
+//   2. The stored data is not from today. This covers the few seconds between
+//      the 9:30am opening and the first refresh arriving, when the market
+//      counts as open but the badge is still holding yesterday's close. It also
+//      covers a morning where a refresh fails and the data never updates.
+//
+// Either condition alone is not enough: the first misses that 9:30am gap, and
+// the second misses 4:20pm on the same day. Both together give:
+//
+//   Tue 11:35am  ->  Last updated: 11:35 AM
+//   Tue 4:20pm   ->  Last updated: Tue, Sep 8, 4:15 PM
+//   Wed 9:29am   ->  Last updated: Tue, Sep 8, 4:15 PM
+//   Wed 9:30am   ->  Last updated: 9:30 AM
+//   Sunday       ->  Last updated: Fri, Sep 11, 4:15 PM
+var WEEKDAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MONTH_NAMES   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function isSameCalendarDay(a, b) {
+  return a.getFullYear() === b.getFullYear() &&
+         a.getMonth()    === b.getMonth() &&
+         a.getDate()     === b.getDate();
+}
+
+function formatLastUpdated(timestamp) {
+  if (!timestamp) return 'Last updated: --';
+  var d = new Date(timestamp);
+  if (isNaN(d.getTime())) return 'Last updated: --';
+
+  var h  = d.getHours() % 12 || 12;
+  var m  = ('0' + d.getMinutes()).slice(-2);
+  var ap = d.getHours() >= 12 ? 'PM' : 'AM';
+  var timeText = h + ':' + m + ' ' + ap;
+
+  var marketClosed = getMarketState() !== 'open';
+  var notToday     = !isSameCalendarDay(d, new Date());
+
+  if (marketClosed || notToday) {
+    var dateText = WEEKDAY_NAMES[d.getDay()] + ', ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getDate();
+    return 'Last updated: ' + dateText + ', ' + timeText;
   }
-  var dashEl  = document.getElementById('lastUpdatedText');
+  return 'Last updated: ' + timeText;
+}
+
+// Dashboard badge only. Called after a dashboard refresh.
+// Deliberately cannot touch the chain page's badge.
+function updateLastUpdated() {
+  var dashEl = document.getElementById('lastUpdatedText');
+  if (dashEl) dashEl.textContent = formatLastUpdated(lastDataTimestamp);
+}
+
+// Chain page badge only. Called when a chain page loads its data.
+function updateChainLastUpdated() {
   var chainEl = document.getElementById('chainLastUpdatedText');
-  if (dashEl) dashEl.textContent = text;
-  if (chainEl) chainEl.textContent = text;
+  if (chainEl) chainEl.textContent = formatLastUpdated(chainDataTimestamp);
 }
 var STOCKS = {
   'NVDA': {name:'NVIDIA Corp',           change:+4.82},
@@ -2054,13 +2222,22 @@ function openChain() {
       });
   }
 
+  // Clear the previous chain's timestamp while the new one loads, so the badge
+  // never briefly shows the time belonging to a different ticker.
+  chainDataTimestamp = null;
+  updateChainLastUpdated();
+
   if (BACKEND_MODE) {
     fetch(BACKEND_URL + '/api/chain/' + ticker)
       .then(function(res) { return res.json(); })
       .then(function(json) {
         var contracts = (json.data || []).map(mapBackendContract);
         var stockPrice = json.stock_price != null ? Number(json.stock_price) : null;
-        if (json.data_updated) lastDataTimestamp = json.data_updated;
+        // Record when THIS chain's data was written, and stamp the chain badge.
+        // Note this sets chainDataTimestamp, not lastDataTimestamp - a chain
+        // page must never overwrite the dashboard's timestamp, or vice versa.
+        chainDataTimestamp = json.data_updated || null;
+        updateChainLastUpdated();
         if (stockPrice != null) {
           document.getElementById('chainChange').textContent = '$' + stockPrice.toFixed(2);
           document.getElementById('chainChange').style.color = 'var(--text-primary)';
@@ -2080,7 +2257,11 @@ function openChain() {
 
 function buildChainPage(ticker, chain, stockPrice) {
   currentStockPrice = stockPrice || null;
-  updateLastUpdated();
+  // Paint the CHAIN badge, not the dashboard's. In the legacy non-backend
+  // modes there is no separate chain timestamp, so fall back to the only one
+  // available rather than leaving the badge blank.
+  if (!BACKEND_MODE && chainDataTimestamp === null) chainDataTimestamp = lastDataTimestamp;
+  updateChainLastUpdated();
   var calls = chain.filter(function(c) { return c.y === 'call'; });
   var puts  = chain.filter(function(c) { return c.y === 'put'; });
 
