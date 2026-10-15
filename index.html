@@ -134,6 +134,14 @@ body.dark .expiry-header:hover{background:#2a2e38;}
 .filter-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;}
 .filter-divider{width:1px;height:18px;background:var(--border);flex-shrink:0;}
 .filter-group{display:flex;align-items:center;gap:4px;}
+/* Keeps a label glued to the buttons it labels, at every screen width.
+   Without this the label and its group are separate items in the filter bar,
+   so the browser wraps between them whenever the row runs out of space -
+   stranding "Show" at the end of one line with its Top buttons on the next.
+   gap:inherit makes the wrapper's internal spacing exactly equal to the bar's
+   own gap at every breakpoint (12px desktop, 8px phone, 6px small phone), so
+   at any width where the row already fits, nothing moves at all. */
+.filter-pair{display:flex;align-items:center;gap:inherit;}
 .filter-btn{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-secondary);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .filter-btn:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-light);}
 .filter-btn.active{background:var(--purple);color:white;border-color:var(--purple);}
@@ -388,13 +396,93 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
 
 
 /* Narrow phones: shrink centered search bar so it can't crowd the logo */
+/* Market status badge - centred over the "Most Active by Volume" card.
+   Surface Duo (540px), Galaxy Tab S4 (712px) and everything between 490px
+   and 767px, on both the dashboard and the options chain page.
+
+   Below 490px this is deliberately NOT applied: the "Last updated" pill is
+   ~293px wide once it carries a date, and the badge would run into it.
+
+   How the offset is derived. The cards below sit in a 2-column grid with a
+   10px gap, so with a row of content width W:
+       column width   = (W - 10) / 2
+       column 2 centre = (W + 10)/2 + (W - 10)/4  =  0.75W + 2.5px
+   margin-right:calc(25% - 2.5px) moves the badge's right edge to 0.75W + 2.5,
+   then translateX(50%) nudges it right by half its own width, putting its
+   CENTRE on 0.75W + 2.5 - exactly the card's centre.
+
+   Using the badge's own width this way means the alignment holds for all four
+   states - "Market Open", "Market Closed", "After Hours" and "Pre-Market" are
+   different widths, and a fixed offset would misalign three of them.
+   transform does not affect layout, so nothing else on the row moves. */
+/* Table search box - 880px to 1044px.
+   In this band every filter fits on line 1 but the search does not, so it was
+   landing alone on line 2, pushed right by its margin-left:auto, with 620-780px
+   of empty space beside it. It read as a stray box rather than part of the bar.
+   Giving it the full row makes it a search bar belonging to the table, which is
+   what the phone layout already does.
+
+   The placeholder is centred the same way the phone band does it: the text
+   stays left-aligned and is pushed inward with padding, so the caret sits at
+   the left edge of the words rather than in the middle of them. text-align
+   :center centres the placeholder just as well, but it also centres the caret,
+   which put the cursor between "Search" and "ticker" and matched no other view
+   on the site.
+
+   The offset is half the width of "Search ticker..." plus the 1px border. The
+   phone band's 54px is measured at its 16px font (104px wide); at the 12px used
+   here the words measure 80px, so the figure is 41px. Verified pixel-exact at
+   880/912/960/1032/1044. Once something is typed, .has-value flips the box back
+   to true centring, which is what the phone band does too. */
+@media(min-width:880px) and (max-width:1044px) {
+  .table-section .ac-wrap{margin-left:0;width:100%;}
+  .table-section .filter-search{
+    width:100%;padding:6px 10px 6px calc(50% - 41px);text-align:left;}
+  .table-section .filter-search.has-value{padding:6px 10px;text-align:center;}
+}
+
+@media(min-width:490px) and (max-width:767px) {
+  .updated-row{position:relative;}
+  .mobile-market-badge{position:absolute;left:calc(75% + 2.5px);top:50%;
+                       transform:translate(-50%,calc(-50% - 8px));margin:0;}
+}
+
 @media(max-width:389px) {
   .global-search{width:140px;}
   .global-search:focus{width:150px;}
+
+  /* Table filter bar - small phones only (Galaxy Z Fold 5 344px, Moto G4 360px,
+     Galaxy A55/S8 360px, iPhone SE 375px).
+     The bar used to wrap wherever it ran out of room, which stranded the word
+     SHOW at the end of a line with its Top buttons pushed to the next one, and
+     split the Stocks/ETFs group away from Calls/Puts.
+     Making each label+group an unbreakable unit, and shaving 2px off each
+     button's side padding, fits the bar into two tidy rows:
+         FILTER [All|Calls|Puts]  [All|Stocks|ETFs]
+         SHOW   [Top 10|Top 25|Top 50|Top 100|All]
+     At 344px the first row still wraps, but the groups stay intact.
+     Nothing at 390px and above is affected. */
+  /* Scoped to the three dashboard tables by id, so the options chain page's
+     own filter bar is left exactly as it is. The .filter-pair wrapper needs no
+     rule here - gap:inherit above already picks up the 6px set on the bar. */
+  .table-section .table-filters{gap:6px;}
+  /* flex-shrink:0 stops a button being squeezed narrower than its label, which
+     would wrap "Top 100" onto two lines inside the pill. If a group genuinely
+     cannot fit, it wraps a button to the next line instead - the label stays
+     attached either way. */
+  .table-section .filter-btn{padding:5px 8px;flex-shrink:0;}
+  .table-section .filter-group{flex-wrap:wrap;}
 }
 @media(max-width:359px) {
   .global-search{width:118px;}
   .global-search:focus{width:128px;}
+
+  /* Galaxy Z Fold 5 (344px) sits ~14px short of fitting the Show row on one
+     line. Shaving 1px off each button's side padding and 1px off the gaps
+     closes that margin, so the row stays a single line here too.
+     Applies below 360px only - no other device in the list is affected. */
+  .table-section .filter-btn{padding:5px 7px;}
+  .table-section .filter-group{gap:3px;}
 }
 
 /* ── SHARE IMAGE CAPTURE ──
@@ -496,12 +584,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   <!-- TABLE 1 -->
   <div class="table-section" id="section-g">
     <div class="table-filters">
-      <span class="filter-label">Filter</span><div class="filter-divider"></div>
+      <div class="filter-pair"><span class="filter-label">Filter</span><div class="filter-divider"></div>
       <div class="filter-group" id="g1">
         <button class="filter-btn active" onclick="setF('g1','gType','all',this);render('g')">All</button>
         <button class="filter-btn" onclick="setF('g1','gType','call',this);render('g')">Calls</button>
         <button class="filter-btn" onclick="setF('g1','gType','put',this);render('g')">Puts</button>
-      </div>
+      </div></div>
       <div class="filter-divider"></div>
       <div class="filter-group" id="g2">
         <button class="filter-btn active" onclick="setF('g2','gAsset','all',this);render('g')">All</button>
@@ -509,14 +597,14 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         <button class="filter-btn" onclick="setF('g2','gAsset','etfs',this);render('g')">ETFs</button>
       </div>
       <div class="filter-divider"></div>
-      <span class="filter-label">Show</span>
+      <div class="filter-pair"><span class="filter-label">Show</span>
       <div class="filter-group" id="g3">
         <button class="filter-btn active" onclick="setLim('g3','gLim',10,this);render('g')">Top 10</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',25,this);render('g')">Top 25</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',50,this);render('g')">Top 50</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',100,this);render('g')">Top 100</button>
         <button class="filter-btn" onclick="setLim('g3','gLim',250,this);render('g')">All</button>
-      </div>
+      </div></div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="gSearch" placeholder="Search ticker..." oninput="render('g')" autocomplete="off"><div class="ac-dropdown" id="gSearch_ac"></div></div>
     </div>
     <div class="table-card">
@@ -535,12 +623,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   <!-- TABLE 2 -->
   <div class="table-section" id="section-v">
     <div class="table-filters">
-      <span class="filter-label">Filter</span><div class="filter-divider"></div>
+      <div class="filter-pair"><span class="filter-label">Filter</span><div class="filter-divider"></div>
       <div class="filter-group" id="v1">
         <button class="filter-btn active" onclick="setF('v1','vType','all',this);render('v')">All</button>
         <button class="filter-btn" onclick="setF('v1','vType','call',this);render('v')">Calls</button>
         <button class="filter-btn" onclick="setF('v1','vType','put',this);render('v')">Puts</button>
-      </div>
+      </div></div>
       <div class="filter-divider"></div>
       <div class="filter-group" id="v2">
         <button class="filter-btn active" onclick="setF('v2','vAsset','all',this);render('v')">All</button>
@@ -548,14 +636,14 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         <button class="filter-btn" onclick="setF('v2','vAsset','etfs',this);render('v')">ETFs</button>
       </div>
       <div class="filter-divider"></div>
-      <span class="filter-label">Show</span>
+      <div class="filter-pair"><span class="filter-label">Show</span>
       <div class="filter-group" id="v3">
         <button class="filter-btn active" onclick="setLim('v3','vLim',10,this);render('v')">Top 10</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',25,this);render('v')">Top 25</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',50,this);render('v')">Top 50</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',100,this);render('v')">Top 100</button>
         <button class="filter-btn" onclick="setLim('v3','vLim',250,this);render('v')">All</button>
-      </div>
+      </div></div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="vSearch" placeholder="Search ticker..." oninput="render('v')" autocomplete="off"><div class="ac-dropdown" id="vSearch_ac"></div></div>
     </div>
     <div class="table-card">
@@ -574,12 +662,12 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
   <!-- TABLE 3 -->
   <div class="table-section" id="section-o">
     <div class="table-filters">
-      <span class="filter-label">Filter</span><div class="filter-divider"></div>
+      <div class="filter-pair"><span class="filter-label">Filter</span><div class="filter-divider"></div>
       <div class="filter-group" id="o1">
         <button class="filter-btn active" onclick="setF('o1','oType','all',this);render('o')">All</button>
         <button class="filter-btn" onclick="setF('o1','oType','call',this);render('o')">Calls</button>
         <button class="filter-btn" onclick="setF('o1','oType','put',this);render('o')">Puts</button>
-      </div>
+      </div></div>
       <div class="filter-divider"></div>
       <div class="filter-group" id="o2">
         <button class="filter-btn active" onclick="setF('o2','oAsset','all',this);render('o')">All</button>
@@ -587,14 +675,14 @@ body.dark .stock-badge{background:#9333ea;color:#ffffff;}
         <button class="filter-btn" onclick="setF('o2','oAsset','etfs',this);render('o')">ETFs</button>
       </div>
       <div class="filter-divider"></div>
-      <span class="filter-label">Show</span>
+      <div class="filter-pair"><span class="filter-label">Show</span>
       <div class="filter-group" id="o3">
         <button class="filter-btn active" onclick="setLim('o3','oLim',10,this);render('o')">Top 10</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',25,this);render('o')">Top 25</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',50,this);render('o')">Top 50</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',100,this);render('o')">Top 100</button>
         <button class="filter-btn" onclick="setLim('o3','oLim',250,this);render('o')">All</button>
-      </div>
+      </div></div>
       <div class="ml-auto ac-wrap"><input class="filter-search" id="oSearch" placeholder="Search ticker..." oninput="render('o')" autocomplete="off"><div class="ac-dropdown" id="oSearch_ac"></div></div>
     </div>
     <div class="table-card">
