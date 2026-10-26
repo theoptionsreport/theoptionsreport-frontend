@@ -1530,19 +1530,67 @@ var ET_PARTS = new Intl.DateTimeFormat('en-US', {
   hourCycle: 'h23'
 });
 
+// ── THE TRADING CALENDAR ──
+// This badge used to know about weekends and nothing else. It had no idea
+// about public holidays or half-days, so on Thanksgiving it would sit there in
+// green reading "Market Open" beside data written the day before - and keep
+// polling all day for figures that could not change.
+//
+// The backend already knows the calendar, because it is the thing deciding
+// whether to fetch. It now sends the day's schedule alongside the data:
+// whether today trades at all, and the two bell times in minutes past midnight
+// Eastern.
+//
+// The state is still worked out every second from the clock, so the badge
+// flips on the exact second as it always did - it just uses real numbers now
+// instead of hardcoded ones. On an early-close day `close` arrives as 780
+// (1:00pm) rather than 960 (4:00pm), and everything downstream follows.
+//
+// Until the first reply arrives - and if an older backend is ever deployed
+// that does not send the field - this falls back to exactly the old
+// behaviour, so the page is never worse off than before.
+var MARKET_SCHEDULE = null;
+
+var PREMARKET_START_MINUTE = 4 * 60;   // 4:00am ET - earliest pre-market trading
+var AFTER_HOURS_MINUTES    = 4 * 60;   // after-hours runs four hours past the bell
+
 function getMarketState() {
   var parts = {};
   var pieces = ET_PARTS.formatToParts(new Date());
   for (var i = 0; i < pieces.length; i++) parts[pieces[i].type] = pieces[i].value;
 
   var day = parts.weekday;
-  if (day === 'Sat' || day === 'Sun') return 'closed';
-
   var t = parseInt(parts.hour, 10) * 60 + parseInt(parts.minute, 10);
+
+  var sched = MARKET_SCHEDULE;
+  if (sched) {
+    if (!sched.trading_day) return 'closed';
+    if (t >= sched.open && t < sched.close) return 'open';
+    if (t >= PREMARKET_START_MINUTE && t < sched.open) return 'premarket';
+    if (t >= sched.close && t < sched.close + AFTER_HOURS_MINUTES) return 'afterhours';
+    return 'closed';
+  }
+
+  // Fallback - weekends and ordinary hours only, exactly as before.
+  if (day === 'Sat' || day === 'Sun') return 'closed';
   if (t >= 570 && t < 960)  return 'open';        // 9:30am - 4:00pm ET
   if (t >= 240 && t < 570)  return 'premarket';   // 4:00am - 9:30am ET
   if (t >= 960 && t < 1200) return 'afterhours';  // 4:00pm - 8:00pm ET
   return 'closed';
+}
+
+// Take the schedule out of a backend reply, if it carries one. Every field is
+// checked before it is trusted: a malformed or partial object leaves the
+// existing behaviour untouched rather than putting the badge into a state
+// nobody can explain.
+function applyMarketSchedule(payload) {
+  if (!payload || !payload.market) return;
+  var m = payload.market;
+  if (typeof m.trading_day !== 'boolean') return;
+  if (typeof m.open !== 'number' || typeof m.close !== 'number') return;
+  if (m.open < 0 || m.close > 1440 || m.close <= m.open) return;
+  MARKET_SCHEDULE = { trading_day: m.trading_day, open: m.open, close: m.close };
+  updateMarketStatus();
 }
 
 function updateMarketStatus() {
@@ -1725,6 +1773,10 @@ function fetchFromBackend(silent) {
     // page still shows something sensible.
     lastDataTimestamp = results[0].data_updated || new Date().toISOString();
 
+    // The stats reply also carries today's trading calendar, which the market
+    // badge and the polling schedule both read.
+    applyMarketSchedule(results[3]);
+
     updateStatCards(results[3]);
     paint('all');
     updateLastUpdated();
@@ -1775,7 +1827,16 @@ function msUntilNextPoll() {
 // those last four writes were never collected. A tab left open across 4:00pm
 // would sit showing 3:55pm data for the rest of the evening. Polling now
 // continues to 4:20pm, safely past the final write, then stops.
-var POLL_END_MINUTE = 16 * 60 + 20;   // 4:20pm ET
+//
+// That 4:20 is now measured from the day's actual closing bell rather than
+// assumed, so on an early-close day polling stops at 1:20pm instead of running
+// on for three more hours against data that stopped changing at 1:00.
+var POLL_TAIL_MINUTES = 20;   // keep polling this long past the closing bell
+
+function pollEndMinute() {
+  var close = MARKET_SCHEDULE ? MARKET_SCHEDULE.close : 16 * 60;
+  return close + POLL_TAIL_MINUTES;
+}
 
 function easternMinutes() {
   var parts = {};
@@ -1789,7 +1850,7 @@ function shouldPoll() {
   if (state === 'open') return true;
   // Keep going through the after-hours tail until the backend has finished
   // writing for the day.
-  if (state === 'afterhours') return easternMinutes() <= POLL_END_MINUTE;
+  if (state === 'afterhours') return easternMinutes() <= pollEndMinute();
   return false;
 }
 
@@ -2325,6 +2386,7 @@ function openChain() {
         // Note this sets chainDataTimestamp, not lastDataTimestamp - a chain
         // page must never overwrite the dashboard's timestamp, or vice versa.
         chainDataTimestamp = json.data_updated || null;
+        applyMarketSchedule(json);
         updateChainLastUpdated();
         if (stockPrice != null) {
           document.getElementById('chainChange').textContent = '$' + stockPrice.toFixed(2);
