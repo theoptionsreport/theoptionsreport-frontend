@@ -1152,149 +1152,10 @@ var byVol  = DATA.slice().sort(function(a,b){return b.v - a.v;});
 var byOI   = DATA.slice().sort(function(a,b){return b.i - a.i;});
 
 // ── LIVE DATA CONFIG ──
-var API_KEY  = 'Oq7Ypfpr1pdqoq6DJWG4YAuxillCbCAz';
-var API_BASE = 'https://api.massive.com';
 var BACKEND_URL = 'https://theoptionsreport-backend.onrender.com';
 var BACKEND_MODE = true;  // set to true to fetch from our backend; false uses old mock/direct
-var LIVE_MODE = false; // set to true to enable live data (direct Massive, legacy)
 
-// ── MAP MASSIVE CONTRACT TO OUR FORMAT ──
-function mapContract(r) {
-  try {
-    var det = r.details || {};
-    var day = r.day || {};
-    var grk = r.greeks || {};
-    var quo = r.last_quote || {};
 
-    var ticker = det.ticker || r.ticker || '';
-    var sym    = ticker.replace(/^O:/,'');
-    var underlying = sym.replace(/\d{6}[CP]\d+$/, '');
-    var type   = (det.contract_type || '').toLowerCase();
-    if (!type) type = sym.match(/\d{6}([CP])\d+/) ? (sym.match(/\d{6}([CP])\d+/)[1] === 'C' ? 'call' : 'put') : 'call';
-
-    var expRaw  = det.expiration_date || '';
-    var expParts = expRaw.split('-');
-    var exp = expParts.length === 3 ? expParts[1] + '/' + expParts[2] + '/' + expParts[0].slice(2) : expRaw;
-
-    // Use change_percent for accurate daily % gain as confirmed by Massive
-    var pct = r.change_percent != null ? Math.round(r.change_percent * 10) / 10
-            : day.change_percent != null ? Math.round(day.change_percent * 10) / 10
-            : 0;
-
-    var last = day.close || day.last || 0;
-    var open = day.open  || 0;
-
-    return {
-      t:  underlying,
-      n:  underlying,
-      c:  sym,
-      y:  type,
-      g:  pct,
-      b:  quo.bid  != null ? quo.bid  : last,
-      a:  quo.ask  != null ? quo.ask  : last,
-      l:  last,
-      o:  open,
-      v:  day.volume       || 0,
-      i:  r.open_interest  || 0,
-      e:  exp,
-      d:  grk.delta != null ? Math.round(grk.delta * 100) / 100 : '--',
-      th: grk.theta != null ? Math.round(grk.theta * 100) / 100 : '--',
-      iv: r.implied_volatility != null ? Math.round(r.implied_volatility * 1000) / 10 : '--'
-    };
-  } catch(e) { return null; }
-}
-
-// ── CONTRACT VALIDITY FILTER ──
-function isValidContract(r) {
-  if (!r) return false;
-  if (r.b <= 0) return false; // exclude $0.00 bid
-  if (r.v < 10 && r.i < 10) return false; // must have at least 10 volume OR 10 open interest
-  return true;
-}
-
-function fetchAllTickers(callback) {
-  var tickers = [];
-  var seen    = {};
-
-  function fetchPage(url) {
-    fetch(url)
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json.results && json.results.length) {
-          json.results.forEach(function(r) {
-            if (r.underlying_ticker && !seen[r.underlying_ticker]) {
-              seen[r.underlying_ticker] = true;
-              tickers.push(r.underlying_ticker);
-            }
-          });
-        }
-        // If there is a next_url, keep paginating
-        if (json.next_url) {
-          fetchPage(json.next_url + '&apiKey=' + API_KEY);
-        } else {
-          // Done — return full ticker list
-          callback(tickers);
-        }
-      })
-      .catch(function() { callback(tickers); });
-  }
-
-  fetchPage(API_BASE + '/v3/reference/options/contracts?order=asc&limit=1000&sort=ticker&apiKey=' + API_KEY);
-}
-function fetchLiveData(tickers, silent) {
-  var allData = [];
-  var index   = 0;
-  var total   = tickers.length;
-
-  // Only show loading screen on first load, not on background refresh
-  if (!silent) {
-    ['gBody','vBody','oBody'].forEach(function(id) {
-      document.getElementById(id).innerHTML =
-        '<tr><td colspan="11" style="text-align:center;padding:40px;color:#9ca3af;font-size:13px">' +
-        'Loading live data... (0 of ' + total + ' tickers)</td></tr>';
-    });
-  }
-
-  function fetchNext() {
-    if (index >= total) {
-      // All tickers fetched — filter, rank and render
-      DATA   = allData.filter(isValidContract);
-      byGain = DATA.slice().sort(function(a,b) { return b.g - a.g; });
-      byVol  = DATA.slice().sort(function(a,b) { return b.v - a.v; });
-      byOI   = DATA.slice().sort(function(a,b) { return b.i - a.i; });
-      updateStatCards();
-      render('all');
-
-      // Update last updated timestamp
-      updateLastUpdated();
-      return;
-    }
-
-    var t = tickers[index++];
-
-    // Only update progress on first load
-    if (!silent) {
-      ['gBody','vBody','oBody'].forEach(function(id) {
-        document.getElementById(id).innerHTML =
-          '<tr><td colspan="11" style="text-align:center;padding:40px;color:#9ca3af;font-size:13px">' +
-          'Loading live data... (' + index + ' of ' + total + ' tickers)</td></tr>';
-      });
-    }
-
-    fetch(API_BASE + '/v3/snapshot/options/' + t + '?limit=250&apiKey=' + API_KEY)
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json.results && json.results.length) {
-          var contracts = json.results.map(mapContract).filter(isValidContract);
-          allData = allData.concat(contracts);
-        }
-        setTimeout(fetchNext, 150);
-      })
-      .catch(function() { setTimeout(fetchNext, 150); });
-  }
-
-  fetchNext();
-}
 
 
 
@@ -1907,19 +1768,6 @@ if (BACKEND_MODE) {
     if (Date.now() - lastFetchAt < MIN_GAP_MS) return;
     fetchFromBackend(true);
   });
-} else if (LIVE_MODE) {
-  // Step 1 — Get complete list of all optionable tickers
-  ['gBody','vBody','oBody'].forEach(function(id) {
-    document.getElementById(id).innerHTML =
-      '<tr><td colspan="11" style="text-align:center;padding:40px;color:#9ca3af;font-size:13px">Fetching all optionable tickers...</td></tr>';
-  });
-
-  fetchAllTickers(function(tickers) {
-    // Step 2 — Fetch live data for all tickers
-    fetchLiveData(tickers, false);
-    // Step 3 — Auto-refresh every 15 minutes silently
-    setInterval(function() { fetchLiveData(tickers, true); }, 15 * 60 * 1000);
-  });
 } else {
   render('all');
   updateStatCards();
@@ -2338,38 +2186,6 @@ function openChain() {
   var allContracts = [];
   var chainStockPrice = null;
 
-  function fetchChainPage(url) {
-    fetch(url)
-      .then(function(res) { return res.json(); })
-      .then(function(json) {
-        if (json.results && json.results.length) {
-          var contracts = json.results.map(mapContract).filter(function(r) { return r; });
-          allContracts = allContracts.concat(contracts);
-
-          // Get stock price from first result
-          if (json.results[0].underlying_asset) {
-            var und = json.results[0].underlying_asset;
-            if (und.price != null) {
-              chainStockPrice = und.price;
-              document.getElementById('chainChange').textContent = '$' + und.price.toFixed(2);
-              document.getElementById('chainChange').style.color = 'var(--text-primary)';
-            }
-          }
-        }
-
-        // If there is a next_url, keep fetching more contracts
-        if (json.next_url) {
-          fetchChainPage(json.next_url + '&apiKey=' + API_KEY);
-        } else {
-          // All contracts loaded — build the chain page
-          buildChainPage(ticker, allContracts, chainStockPrice);
-        }
-      })
-      .catch(function(err) {
-        document.getElementById('chainAccordion').innerHTML =
-          '<div style="text-align:center;padding:40px;color:#dc2626;font-size:13px;">Failed to load options chain: ' + err.message + '</div>';
-      });
-  }
 
   // Clear the previous chain's timestamp while the new one loads, so the badge
   // never briefly shows the time belonging to a different ticker.
@@ -2398,8 +2214,6 @@ function openChain() {
         document.getElementById('chainAccordion').innerHTML =
           '<div style="text-align:center;padding:40px;color:#dc2626;font-size:13px;">Failed to load options chain: ' + err.message + '</div>';
       });
-  } else if (LIVE_MODE) {
-    fetchChainPage(API_BASE + '/v3/snapshot/options/' + ticker + '?limit=250&order=asc&sort=ticker&apiKey=' + API_KEY);
   } else {
     buildChainPage(ticker, DATA.filter(function(c) { return c.t === ticker; }));
   }
